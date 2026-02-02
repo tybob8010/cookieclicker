@@ -1,17 +1,44 @@
-﻿/*
-All this code is copyright Orteil, 2013-2026.
-	-with some help, advice and fixes by Nicholas Laux, Debugbro, Opti, the folks at Playsaurus, and lots of people on reddit, Discord, and the DashNet forums
-	-also includes a bunch of snippets found on stackoverflow.com and others
-	-want to mod the game? scroll down to the "MODDING API" section
-Hello, and welcome to the joyous mess that is main.js. Code contained herein is not guaranteed to be good, consistent, or sane. While you may peruse it for educational purposes, please keep in mind this file has been continually updated since 2013 and may be crude in some parts, reflecting my differing programming skills over the years. For compatibility reasons (and because of my disdain for precompilers), this game strictly employs javascript as it was in 2013 (ES5) - which means luxuries such as 'let', arrow functions and string literals are unavailable. Don't let that stop you when writing mods though!
-As Cookie Clicker is rife with puns and tricky wordplay, localization was never intended to be possible - but ended up happening anyway as part of the Steam port. As a result, usage of strings is somewhat unorthodox in some places.
-Have a nice trip, and stay safe.
-Spoilers ahead.
+﻿//自分用のメモ　MODは「MODDING API」を見るべし！
+
+/*
+このコードはすべて Orteil による著作物です（2013–2026）。
+	- Nicholas Laux、Debugbro、Opti、Playsaurus の皆さん、
+	  そして Reddit、Discord、DashNet フォーラムの多くの人々からの
+	  助言・修正・協力を含みます
+	- また、stackoverflow.com などで見つけたコード断片も多数含まれています
+	- ゲームを改造（MOD）したい場合は、下にスクロールして
+	  「MODDING API」セクションを参照してください
+
+こんにちは。そして、main.js という喜ばしくも混沌とした世界へようこそ。
+ここに含まれるコードは、良質であること、一貫性があること、
+あるいは正気であることを一切保証しません。
+教育目的で読むことはできますが、このファイルは2013年から
+継続的に更新されてきたものであり、
+私自身のプログラミングスキルの変遷を反映して、
+一部かなり粗い実装になっている点に注意してください。
+
+互換性の理由（そしてプリコンパイラへの個人的な嫌悪感）から、
+このゲームは 2013年当時の JavaScript（ES5）を厳密に使用しています。
+そのため、`let`、アロー関数、テンプレート文字列といった
+現代的な便利機能は使えません。
+とはいえ、MODを書くときにそれで萎縮する必要はありません！
+
+Cookie Clicker はダジャレや言葉遊びが非常に多いため、
+当初はローカライズ不可能な設計でした。
+しかし、Steam 版への移植の過程で、結果的にローカライズが行われました。
+その影響で、文字列の扱いが一部かなり変則的になっています。
+
+それでは、良い旅を。
+そして、安全に。
+
+※ここから先はネタバレあり。
+
 https://orteil.dashnet.org
 */
 
+
 /*=====================================================================================
-MISC HELPER FUNCTIONS
+その他の補助関数
 =======================================================================================*/
 function l(what) {return document.getElementById(what);}
 function choose(arr) {return arr[Math.floor(Math.random()*arr.length)];}
@@ -35,7 +62,7 @@ function romanize(num){
 	return Array(+digits.join("")+1).join("M")+roman;
 }
 
-//disable sounds coming from soundjay.com (sorry)
+// soundjay.com 由来の効果音を無効化（ごめんね）
 var realAudio=typeof Audio!=='undefined'?Audio:function(){return {}};//backup real audio
 Audio=function(src){
 	if (src && src.indexOf('soundjay')>-1) {Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');this.play=function(){};}
@@ -56,13 +83,13 @@ function randomFloor(x) {if ((x%1)<Math.random()) return Math.floor(x); else ret
 function shuffle(array)
 {
 	var counter = array.length, temp, index;
-	// While there are elements in the array
+	// 配列に要素があるあいだ
 	while (counter--)
 	{
-		// Pick a random index
+		// ランダムなインデックスを選ぶ
 		index = (Math.random() * counter) | 0;
 
-		// And swap the last element with it
+		// そして最後の要素と入れ替える
 		temp = array[counter];
 		array[counter] = array[index];
 		array[index] = temp;
@@ -90,7 +117,7 @@ function getCenter(el){
 	return [bounds.centerx,bounds.centery];
 };
 Element.prototype.getBounds=function(){
-	//note: prototype calls may be slow!
+	// 注意: prototype を呼び出すと動作が遅くなる場合があります！
 	var bounds=this.getBoundingClientRect();
 	var s=Game.scale;
 	bounds.x/=s;
@@ -159,6 +186,7 @@ var ajax=function(url,callback)
 			}
 		}catch(e){}
 	}
+	//↓ただのコメントアウト
 	//xhr.onerror=function(e){console.log('ERROR',e);}
 	if (url.indexOf('?')==-1) url+='?'; else url+='&';
 	url+='nocache='+Date.now();
@@ -188,7 +216,7 @@ var getJson=function(url,callback,error)
 		}catch(e){if (error) error(e);}
 	}
 	if (url.indexOf('?')==-1) url+='?'; else url+='&';
-	url+='nocache='+Math.floor(Date.now()/1000/60/30);//cache in 30-minute steps
+	url+='nocache='+Math.floor(Date.now()/1000/60/30);// 30分単位でキャッシュする
 	xhr.open('GET',url,true);
 	xhr.send();
 	return true;
@@ -213,7 +241,7 @@ function toFixed(x)
 	return x;
 }
 
-//Beautify and number-formatting adapted from the Frozen Cookies add-on (http://cookieclicker.wikia.com/wiki/Frozen_Cookies_%28JavaScript_Add-on%29)
+// 美化および数値フォーマットは Frozen Cookies アドオン（http://cookieclicker.wikia.com/wiki/Frozen_Cookies_%28JavaScript_Add-on%29）から適用・調整
 function formatEveryThirdPower(notations)
 {
 	return function (val)
@@ -234,6 +262,7 @@ function formatEveryThirdPower(notations)
 	};
 }
 
+//↓ただのコメントアウト
 //function rawFormatter(val){return Math.round(val*1000)/1000;}
 function rawFormatter(val){return val;}
 
@@ -275,19 +304,21 @@ var Beautify=function(val,floats)
 	if (floats>0 && Math.abs(val)<1000 && Math.floor(fixed)!=fixed) decimal='.'+(fixed.toString()).split('.')[1];
 	val=Math.floor(Math.abs(val));
 	if (floats>0 && fixed==val+1) val++;
+	//↓ただのコメントアウト
 	//var format=!EN?2:Game.prefs.format?2:1;
 	var format=Game.prefs.format?2:1;
 	var formatter=numberFormatters[format];
 	var output=(val.toString().indexOf('e+')!=-1 && format==2)?val.toPrecision(3).toString():formatter(val).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+	//↓ただのコメントアウト
 	//var output=formatter(val).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
 	if (output=='0') negative=false;
 	return negative?'-'+output:output+decimal;
 }
 var shortenNumber=function(val)
 {
-	//if no scientific notation, return as is, else :
-	//keep only the 5 first digits (plus dot), round the rest
-	//may or may not work properly
+	// もし指数表記（科学的表記）がなければ、そのまま返す。そうでなければ：
+	// 最初の5桁（と小数点）だけを保持し、それ以外は四捨五入する
+	// 正しく動作するかどうかは保証されない
 	if (val>=1000000 && isFinite(val))
 	{
 		var num=val.toString();
@@ -309,7 +340,7 @@ var SimpleBeautify=function(val)
 	if (str.indexOf('e')!=-1) return str;
 	var str2='';
 	var len=str.length;
-	for (var i=0;i<len;i++)//add commas
+	for (var i=0;i<len;i++)//カンマを追加する
 	{
 		if ((len-i)%3==0 && i>0) str2+=',';
 		str2+=str[i];
@@ -355,13 +386,14 @@ var locName='none';
 var locPatches=[];
 var locPlur='nplurals=2;plural=(n!=1);';//see http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html
 var locPlurFallback=locPlur;
-//note : plural index will be downgraded to the last matching, ie. in this case, if we get "0" but don't have a 3rd option, use the 2nd option (or 1st, lacking that too)
+// 注意：複数形のインデックスは、最後に一致するものに繰り下げられます。
+// つまり、この場合「0」が返っても3番目の選択肢がなければ、2番目の選択肢を使います（それもなければ1番目を使用）
 var locStringsByPart={};
 var FindLocStringByPart=function(match)
 {
 	return locStringsByPart[match]||undefined;
 	/*
-	//note: slow, only do this on init
+	// 注意：処理が遅いので、初期化時だけ行うこと
 	for (var i in locStrings){
 		var bit=i.split(']');
 		if (bit[0].substring(1)==match) return i;
@@ -389,8 +421,9 @@ var Langs={
 	'SV':{file:'SV',nameEN:'Swedish',name:'Svenska',changeLanguage:'Spr&#xE5;k',icon:0,w:1},
 };
 
-//note : baseline should be the original english text
-//in several instances, the english text will be quite different from the other languages, as this game was initially never meant to be translated and the translation process doesn't always play well with complex sentence structures
+// 注意：baseline（基準）は元の英語テキストにすべき
+// いくつかの場合、英語のテキストは他の言語とかなり異なることがあります。
+// このゲームは最初、翻訳を想定していなかったため、翻訳プロセスは複雑な文構造に対してうまく機能しないことがあります。
 /*use:
 	loc('Plain text')
 	loc('Text where %1 is a parameter','something')
@@ -430,9 +463,9 @@ var loc=function(id,params,baseline)
 var parseLoc=function(str,params)
 {
 	/*
-		parses localization strings
-		-there can only be 1 plural per string and it MUST be at index %1
-		-a pluralized string is detected if we have at least 1 param and the matching localized string is an array
+    ローカライズ文字列を解析します
+    - 1つの文字列につき複数形は1つだけで、必ず %1 の位置にある必要があります
+    - 複数形文字列は、少なくとも1つのパラメータがあり、対応するローカライズ済み文字列が配列の場合に検出されます
 	*/
 	if (typeof params==='undefined') params=[];
 	else if (params.constructor!==Array) params=[params];
@@ -976,7 +1009,9 @@ var SoundInsts=[];
 var SoundI=0;
 for (var i=0;i<12;i++){SoundInsts[i]=new Audio();}
 var pitchSupport=false;
-//note : Chrome turns out to not support webkitPreservesPitch despite the specifications claiming otherwise, and Firefox clips some short sounds when changing playbackRate, so i'm turning the feature off completely until browsers get it together
+// 注意：仕様ではサポートされているとされているにもかかわらず、Chrome は webkitPreservesPitch をサポートしていません。
+// また、Firefox は playbackRate を変更すると短い音が途切れることがあります。
+// そのため、ブラウザが安定するまではこの機能を完全にオフにしています。
 //if (SoundInsts[0].preservesPitch || SoundInsts[0].mozPreservesPitch || SoundInsts[0].webkitPreservesPitch) pitchSupport=true;
 
 var PlaySound=function(url,vol,pitchVar)
@@ -1001,7 +1036,7 @@ var PlaySound=function(url,vol,pitchVar)
 		var sound=SoundInsts[SoundI];
 		SoundI++;
 		if (SoundI>=12) SoundI=0;
-		sound.src=Sounds[url].src;//note: safari still reloads file
+		sound.src=Sounds[url].src;// 注意：Safari ではまだファイルが再読み込みされます
 		//sound.currentTime=0;
 		sound.volume=Math.pow(volume*volumeSetting/100,2);
 		if (pitchSupport)
@@ -1082,7 +1117,7 @@ Timer.say=function(label)
 
 
 /*=====================================================================================
-GAME INITIALIZATION
+ゲーム初期化
 =======================================================================================*/
 var Game={};
 
@@ -1091,47 +1126,49 @@ var Game={};
 	MODDING API
 	=======================================================================================*/
 	/*
-		to use:
-		-(NOTE: this functions a little differently in the standalone/Steam version; have a look in the game's /mods folder for example mods - though most of the information below still applies)
-		-have your mod call Game.registerMod("unique id",mod object)
-		-the "unique id" value is a string the mod will use to index and retrieve its save data; special characters are ignored
-		-the "mod object" value is an object structured like so:
-			{
-				init:function(){
-					//this function is called as soon as the mod is registered
-					//declare hooks here
-				},
-				save:function(){
-					//use this to store persistent data associated with your mod
-					return 'a string to be saved';
-				},
-				load:function(str){
-					//do stuff with the string data you saved previously
-				},
-			}
-		-the mod object may also contain any other data or functions you want, for instance to make them accessible to other mods
-		-your mod and its data can be accessed with Game.mods['mod id']
-		-hooks are functions the game calls automatically in certain circumstances, like when calculating cookies per click or when redrawing the screen
-		-to add a hook: Game.registerHook('hook id',yourFunctionHere) - note: you can also declare whole arrays of hooks, ie. Game.registerHook('hook id',[function1,function2,...])
-		-to remove a hook: Game.removeHook('hook id',theSameFunctionHere)
-		-some hooks are fed a parameter you can use in the function
-		-list of valid hook ids:
-			'logic' - called every logic tick
-			'draw' - called every draw tick
-			'reset' - called whenever the player resets; parameter is true if this is a hard reset, false if it's an ascension
-			'reincarnate' - called when the player has reincarnated after an ascension
-			'ticker' - called when determining news ticker text; should return an array of possible choices to add
-			'tickerFinal' - called once a ticker text has been chosen; should return the new ticker text. use to modify or replace ticker entries
-			'cps' - called when determining the CpS; parameter is the current CpS; should return the modified CpS
-			'cpsMult' - called when determining the global CpS multiplier; parameter is the current multiplier; should return the modified multiplier
-			'cookiesPerClick' - called when determining the cookies per click; parameter is the current value; should return the modified value
-			'click' - called when the big cookie is clicked
-			'create' - called after the game declares all buildings, buffs, upgrades and achievs; use this to declare your own - note that while the game distinguishes between vanilla and non-vanilla content, saving/loading functionality for custom content (including stuff like active buffs or permanent upgrade slotting) is not explicitly implemented and may be unpredictable and broken
-			'check' - called every few seconds when we check for upgrade/achiev unlock conditions; you can also use this for other checks that you don't need happening every logic frame
-		-function hooks are provided for convenience and more advanced mod functionality will probably involve manual code injection
-		-please be mindful of the length of the data you save, as it does inflate the export-save-to-string feature
-		
-		NOTE: modding API is susceptible to change and may not always function super-well
+	使用方法：
+	- （注意：スタンドアロン版/Steam版では少し動作が異なります。例としてゲームの /mods フォルダ内のMODを確認してください。ただし、以下の情報の多くは依然として適用されます）
+	- MODは Game.registerMod("ユニークID", MODオブジェクト) を呼び出してください
+	- "ユニークID" はMODが自分のセーブデータを保存・取得するために使う文字列です。特殊文字は無視されます
+	- "MODオブジェクト" は次のような構造のオブジェクトです：
+		{
+			init:function(){
+				// この関数はMODが登録された直後に呼ばれます
+				// フックをここで宣言します
+			},
+			save:function(){
+				// MODに関連付けられた永続データを保存するのに使います
+				return '保存する文字列';
+			},
+			load:function(str){
+				// 以前保存した文字列データを使って処理を行います
+			},
+		}
+	- MODオブジェクトは、他のMODからアクセスできるように任意のデータや関数を含めることもできます
+	- MODやそのデータには Game.mods['MODID'] でアクセス可能です
+	- フックは、クリック時のクッキー計算や画面描画など、特定の状況でゲームが自動的に呼び出す関数です
+	- フックを追加するには：Game.registerHook('フックID', あなたの関数)  
+	- 配列で複数の関数を登録することも可能です：Game.registerHook('フックID', [関数1, 関数2, ...])
+	- フックを削除するには：Game.removeHook('フックID', 同じ関数)
+	- 一部のフックには関数で使えるパラメータが渡されます
+	- 有効なフックIDの一覧：
+		- 'logic' - 各ロジックティックごとに呼ばれます
+		- 'draw' - 各描画ティックごとに呼ばれます
+		- 'reset' - プレイヤーがリセットしたときに呼ばれます。パラメータはハードリセットなら true、アセンションなら false
+		- 'reincarnate' - アセンション後にプレイヤーが転生したときに呼ばれます
+		- 'ticker' - ニュースティッカーのテキストを決定するときに呼ばれます。追加する候補の配列を返す必要があります
+		- 'tickerFinal' - ティッカーテキストが選ばれた後に呼ばれます。新しいティッカーテキストを返すことで変更や置換が可能です
+		- 'cps' - CpS（クッキー毎秒）を決定するときに呼ばれます。パラメータは現在の CpS で、変更後の値を返す必要があります
+		- 'cpsMult' - グローバル CpS 倍率を決定するときに呼ばれます。パラメータは現在の倍率で、変更後の値を返す必要があります
+		- 'cookiesPerClick' - クリックごとのクッキー数を決定するときに呼ばれます。パラメータは現在の値で、変更後の値を返す必要があります
+		- 'click' - ビッグクッキーがクリックされたときに呼ばれます
+		- 'create' - ゲームが全ての建物、バフ、アップグレード、実績を宣言した後に呼ばれます。ここで独自のものを宣言できます  
+		- 注意：ゲームはバニラ（元の）コンテンツと非バニラコンテンツを区別しますが、カスタムコンテンツの保存/読み込み機能（アクティブバフや恒久アップグレードスロットなど）は明示的には実装されておらず、予測不可能で壊れる可能性があります
+		- 'check' - 数秒ごとにアップグレードや実績の条件チェックを行うときに呼ばれます。他の定期チェックにも使用可能です
+	- フック関数は便宜上用意されています。より高度なMOD機能は手動でコード注入することになるでしょう
+	- 保存するデータの長さには注意してください。長いと「セーブを文字列としてエクスポート」する機能に影響します
+
+	注意：モッディングAPIは変更される可能性があり、常に完璧に動作するとは限りません
 	*/
 	Game.mods={};
 	Game.sortedMods=[];
@@ -1281,18 +1318,17 @@ var Game={};
 		Game.Prompt('<id ModData><h3>'+loc("Mod data")+'</h3><div class="block">'+tinyIcon([16,5])+'<div></div>'+loc("These are the mods present in your save data. You may delete some of this data to make your save file smaller.")+'</div><div class="block" style="font-size:11px;">'+str+'</div>',[loc("Back")]);
 	}
 	
-	Game.LoadMod=LoadScript;//loads the mod at the given URL
-	
+	Game.LoadMod=LoadScript;// 指定されたURLからMODを読み込む
 	if (false)
 	{
 		//EXAMPLE MOD
 		Game.registerMod('test mod',{
 			/*
-				what this example mod does:
-				-double your CpS
-				-display a little popup for half a second whenever you click the big cookie
-				-add a little intro text above your bakery name, and generate that intro text at random if you don't already have one
-				-save and load your intro text
+				このサンプルMODが行うこと：
+				- CpS（クッキー毎秒）を2倍にする
+				- ビッグクッキーをクリックするたびに、0.5秒間だけ小さなポップアップを表示する
+				- ベーカリー名の上に小さなイントロテキストを追加し、まだ持っていなければランダムに生成する
+				- イントロテキストを保存・読み込み可能にする
 			*/
 			init:function(){
 				Game.registerHook('reincarnate',function(){Game.mods['test mod'].addIntro();});
@@ -1301,7 +1337,7 @@ var Game={};
 				Game.registerHook('cps',function(cps){return cps*2;});
 			},
 			save:function(){
-				//note: we use stringified JSON for ease and clarity but you could store any type of string
+				// 注意: ここでは扱いやすさと分かりやすさのためにJSON文字列化した形式を使っていますが、任意の文字列を保存することも可能です
 				return JSON.stringify({text:Game.playerIntro})
 			},
 			load:function(str){
@@ -1309,7 +1345,7 @@ var Game={};
 				if (data.text) Game.mods['test mod'].addIntro(data.text);
 			},
 			addIntro:function(text){
-				//note: this is not a mod hook, just a function that's part of the mod
+				// 注意: これはMODのフックではなく、MOD内で定義されている単なる関数です
 				Game.playerIntro=text||choose(['oh snap, it\'s','watch out, it\'s','oh no! here comes','hide your cookies, for here comes','behold! it\'s']);
 				if (!l('bakerySubtitle')) l('bakeryName').insertAdjacentHTML('afterend','<div id="bakerySubtitle" class="title" style="text-align:center;position:absolute;left:0px;right:0px;bottom:32px;font-size:12px;pointer-events:none;text-shadow:0px 1px 1px #000,0px 0px 4px #f00;opacity:0.8;"></div>');
 				l('bakerySubtitle').textContent='~'+Game.playerIntro+'~';
@@ -1317,9 +1353,9 @@ var Game={};
 		});
 	}
 	
-	//replacing an existing canvas picture with a new one at runtime : Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
-	//upgrades and achievements can use other pictures than icons.png; declare their icon with [posX,posY,'http://example.com/myIcons.png']
-	//check out the "UNLOCKING STUFF" section to see how unlocking achievs and upgrades is done
+// 実行時に既存のキャンバス画像を新しいものに置き換える: Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
+// アップグレードや実績は icons.png 以外の画像を使うことも可能；アイコンは [posX, posY, 'http://example.com/myIcons.png'] の形式で指定
+// アチーブメントやアップグレードのアンロック方法については「UNLOCKING STUFF（アンロック関連）」セクションを参照
 })();
 
 Game.version=VERSION;
@@ -2215,17 +2251,18 @@ Game.Launch=function()
 			var h=window.innerHeight;
 			
 			/*
-				//game will be resized if the window is too big
-				//i have no basis for these numbers
-				//note: could also just use window.screen.width if available
-				//this feature has a few visual issues. will rework eventually
-				var area=Math.sqrt(w*h);
-				if (area<1500) zoom=1;
-				else if (area<2000) zoom=1.5;
-				else if (area<2500) zoom=2;
-				else zoom=3;
-				Game.zoom=zoom;
+				// ウィンドウが大きすぎる場合、ゲームのサイズを調整します
+				// これらの数値には特に根拠はありません
+				// 注意：利用可能なら window.screen.width を使うこともできます
+				// この機能にはいくつか視覚的な問題があります。いずれ修正予定です
+				var area = Math.sqrt(w * h);
+				if (area < 1500) zoom = 1;
+				else if (area < 2000) zoom = 1.5;
+				else if (area < 2500) zoom = 2;
+				else zoom = 3;
+				Game.zoom = zoom;
 			*/
+
 			
 			var prevW=Game.windowW;
 			var prevH=Game.windowH;
@@ -2268,45 +2305,46 @@ Game.Launch=function()
 		}
 		Game.resize();
 		
-		Game.startDate=parseInt(Date.now());//when we started playing
-		Game.fullDate=parseInt(Date.now());//when we started playing (carries over with resets)
-		Game.lastDate=parseInt(Date.now());//when we last saved the game (used to compute "cookies made since we closed the game" etc)
-		
+		Game.startDate = parseInt(Date.now()); // ゲームを始めた日時（プレイ開始時刻）
+		Game.fullDate = parseInt(Date.now());  // ゲームを始めた日時（リセット後も引き継がれる）
+		Game.lastDate = parseInt(Date.now());  // 最後にゲームを保存した日時（「ゲームを閉じてから作ったクッキー数」計算に使用）
+
 		Game.cookiesSent=0;Game.cookiesReceived=0;
 		
 		Game.prefs=[];
 		Game.DefaultPrefs=function()
 		{
-			Game.prefs.particles=1;//particle effects : falling cookies etc
-			Game.prefs.numbers=1;//numbers that pop up when clicking the cookie
-			Game.prefs.autosave=1;//save the game every minute or so
-			Game.prefs.autoupdate=1;//send an AJAX request to the server every 30 minutes (note : ignored)
-			Game.prefs.milk=1;//display milk
-			Game.prefs.fancy=1;//CSS shadow effects (might be heavy on some browsers)
-			Game.prefs.warn=0;//warn before closing the window
-			Game.prefs.cursors=1;//display cursors
-			Game.prefs.focus=1;//make the game refresh less frequently when off-focus
-			Game.prefs.popups=0;//use old-style popups (no longer used)
-			Game.prefs.format=0;//shorten numbers
-			Game.prefs.notifs=0;//notifications fade faster
-			Game.prefs.animate=1;//animate buildings
-			Game.prefs.wobbly=1;//wobbly cookie
-			Game.prefs.monospace=0;//alt monospace font for cookies
-			Game.prefs.filters=1;//CSS filter effects (might be heavy on some browsers)
-			Game.prefs.cookiesound=1;//use new cookie click sound
-			Game.prefs.crates=0;//show crates around icons in stats
-			Game.prefs.altDraw=0;//use requestAnimationFrame to update drawing instead of fixed 30 fps setTimeout
-			Game.prefs.showBackupWarning=1;//if true, show a "Have you backed up your save?" message on save load; set to false when save is exported
-			Game.prefs.extraButtons=1;//if true, show Mute buttons and the building master bar
-			Game.prefs.askLumps=0;//if true, show a prompt before spending lumps
-			Game.prefs.customGrandmas=1;//if true, show patreon names for grandmas
-			Game.prefs.timeout=0;//if true, game may show pause screen when timed out
-			Game.prefs.cloudSave=1;//if true and on Steam, save and load to cloud
-			Game.prefs.bgMusic=1;//if true and on Steam, play music even when game isn't focused
-			Game.prefs.notScary=0;//if true, make some of the scary stuff less scary ("eyebrow mode")
-			Game.prefs.fullscreen=0;//if true, Steam game will be fullscreen
-			Game.prefs.screenreader=0;//if true, add some DOM stuff to facilitate screenreader interaction (requires reload)
-			Game.prefs.discordPresence=1;//if true and applicable, show game activity in Discord status
+			Game.prefs.particles = 1;      // パーティクル効果：落ちるクッキーなど
+			Game.prefs.numbers = 1;        // クッキーをクリックしたときに数字を表示
+			Game.prefs.autosave = 1;       // ゲームを1分おきくらいに自動保存
+			Game.prefs.autoupdate = 1;     // 30分ごとにサーバーにAJAXリクエスト（※無視される）
+			Game.prefs.milk = 1;           // ミルクを表示
+			Game.prefs.fancy = 1;          // CSSの影の効果（ブラウザによっては重い）
+			Game.prefs.warn = 0;           // ウィンドウを閉じる前の警告
+			Game.prefs.cursors = 1;        // カーソルを表示
+			Game.prefs.focus = 1;          // フォーカス外時は更新頻度を下げる
+			Game.prefs.popups = 0;         // 古いスタイルのポップアップ（もう使われない）
+			Game.prefs.format = 0;         // 数字を短縮表示
+			Game.prefs.notifs = 0;         // 通知のフェードを早める
+			Game.prefs.animate = 1;        // 建物をアニメーション表示
+			Game.prefs.wobbly = 1;         // クッキーをゆらゆらさせる
+			Game.prefs.monospace = 0;      // クッキー用の代替等幅フォント
+			Game.prefs.filters = 1;        // CSSフィルター効果（ブラウザによっては重い）
+			Game.prefs.cookiesound = 1;    // 新しいクッキークリック音を使用
+			Game.prefs.crates = 0;         // 統計のアイコンにクレートを表示
+			Game.prefs.altDraw = 0;        // 描画更新を requestAnimationFrame に変更（従来は固定30fps setTimeout）
+			Game.prefs.showBackupWarning = 1; // true の場合、セーブ読み込み時に「バックアップしましたか？」を表示
+			Game.prefs.extraButtons = 1;   // true の場合、ミュートボタンや建物マスターバーを表示
+			Game.prefs.askLumps = 0;       // true の場合、ラプス使用前に確認プロンプトを表示
+			Game.prefs.customGrandmas = 1; // true の場合、Patreonサポート者名をおばあちゃんに表示
+			Game.prefs.timeout = 0;        // true の場合、タイムアウト時に一時停止画面を表示
+			Game.prefs.cloudSave = 1;      // true の場合、Steamでクラウドセーブ/ロード
+			Game.prefs.bgMusic = 1;        // true の場合、Steam版でゲームが非フォーカス時も音楽を再生
+			Game.prefs.notScary = 0;       // true の場合、怖い要素をやや緩和（「眉毛モード」）
+			Game.prefs.fullscreen = 0;     // true の場合、Steam版はフルスクリーン
+			Game.prefs.screenreader = 0;   // true の場合、スクリーンリーダー用DOMを追加（リロード必要）
+			Game.prefs.discordPresence = 1; // true の場合、Discordステータスにゲームプレイ情報を表示
+
 		}
 		Game.DefaultPrefs();
 		
@@ -7262,7 +7300,7 @@ Game.Launch=function()
 			if (Game.TickerAge<=0) Game.getNewTicker();
 			else if (Game.Ticker=='') Game.getNewTicker(true);
 		}
-		Game.getNewTicker=function(manual)//note : "manual" is true if the ticker was clicked, but may also be true on startup etc
+		Game.getNewTicker = function(manual) // 注意: "manual" は、ティッカー（ニュース欄）がクリックされた場合に true になるが、起動時などにも true になることがある
 		{
 			var list=[];
 			
@@ -8312,7 +8350,7 @@ Game.Launch=function()
 				if ((Game.buyMode==1 && Game.cookies>=price) || (Game.buyMode==-1 && me.amount>0)) canBuy=true;
 				
 				var synergiesStr='';
-				//note : might not be entirely accurate, math may need checking
+				// 注意: 完全に正確とは限らない。計算（数学的処理）を確認する必要があるかもしれない
 				if (me.amount>0)
 				{
 					var synergiesWith={};
@@ -10080,8 +10118,12 @@ Game.Launch=function()
 			if (vaultStr=='') l('vaultUpgrades').style.display='none'; else l('vaultUpgrades').style.display='block';
 		}
 		
-		Game.UnlockAt=[];//this contains an array of every upgrade with a cookie requirement in the form of {cookies:(amount of cookies earned required),name:(name of upgrade or achievement to unlock)} (and possibly require:(name of upgrade of achievement to own))
-		//note : the cookie will not be added to the list if it contains locked:1 (use for seasonal cookies and such)
+		Game.UnlockAt = []; 
+		// これは、クッキー獲得数に応じてアンロックされるアップグレードや実績の配列を格納する。
+		// 配列の各要素は次の形を持つ：
+		// { cookies: (必要なクッキー獲得数), name: (アンロックするアップグレードや実績の名前) }
+		// 必要に応じて、require: (所持している必要があるアップグレードや実績の名前) を追加可能。
+		// 注意: locked:1 が付いているクッキーはリストに追加されない（季節限定クッキーなどに使用）
 		
 		var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 		var getStrCookieProductionMultiplierPlus=function(x)
@@ -10104,9 +10146,9 @@ Game.Launch=function()
 			return upgrade;
 		}
 		
-		//tiered upgrades system
-		//each building has several upgrade tiers
-		//all upgrades in the same tier have the same color, unlock threshold and price multiplier
+		// 階層型アップグレードシステム
+		// 各建物にはいくつかのアップグレード階層（ティア）がある
+		// 同じ階層内のすべてのアップグレードは、同じ色、アンロック条件、価格倍率を持つ
 		Game.Tiers={
 			1:{name:'Plain',unlock:1,achievUnlock:1,iconRow:0,color:'#ccb3ac',price:					10},
 			2:{name:'Berrylium',unlock:5,achievUnlock:50,iconRow:1,color:'#ff89e7',price:				50},
@@ -10167,12 +10209,13 @@ Game.Launch=function()
 		Game.SynergyUpgrade=function(name,desc,building1,building2,tier)
 		{
 			/*
-				creates a new upgrade that :
-				-unlocks when you have tier.unlock of building1 and building2
-				-is priced at (building1.price*10+building2.price*1)*tier.price (formerly : Math.sqrt(building1.price*building2.price)*tier.price)
-				-gives +(0.1*building1)% cps to building2 and +(5*building2)% cps to building1
-				-if building2 is below building1 in worth, swap them
+				新しいアップグレードを作成します：
+				- building1 と building2 の両方で tier.unlock を達成したときにアンロックされる
+				- 価格は (building1.price * 10 + building2.price * 1) * tier.price （以前は Math.sqrt(building1.price * building2.price) * tier.price）
+				- building2 に対して cps を +(0.1 * building1)% 増加させ、building1 に対して cps を +(5 * building2)% 増加させる
+				- building2 の価値が building1 より低い場合は、2つを入れ替える
 			*/
+
 			//if (Game.Objects[building1].basePrice>Game.Objects[building2].basePrice) {var temp=building2;building2=building1;building1=temp;}
 			var b1=Game.Objects[building1];
 			var b2=Game.Objects[building2];
@@ -10230,9 +10273,10 @@ Game.Launch=function()
 		var pool='';
 		var power=0;
 		
-		//define upgrades
-		//WARNING : do NOT add new upgrades in between, this breaks the saves. Add them at the end !
-		var order=100;//this is used to set the order in which the items are listed
+		// アップグレードを定義する
+		// 注意: 中間に新しいアップグレードを追加しないでください。セーブデータが壊れます。
+		// 追加する場合は必ず最後に！
+		var order = 100; // アイテムのリストに表示される順序を設定するために使われる
 		new Game.Upgrade('Reinforced index finger',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>prod prod</q>',100,[0,0]);Game.MakeTiered(Game.last,1,0);
 		new Game.Upgrade('Carpal tunnel prevention cream',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>it... it hurts to click...</q>',500,[0,1]);Game.MakeTiered(Game.last,2,0);
 		new Game.Upgrade('Ambidextrous',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>Look ma, both hands!</q>',10000,[0,2]);Game.MakeTiered(Game.last,3,0);
@@ -11764,7 +11808,7 @@ Game.Launch=function()
 		
 		
 		order=19100;
-		//note : price for these capped to base price OR 1 day of unbuffed CpS
+		// 注意：これらの価格は、基本価格またはバフなしの1日分のCpSのどちらか高い方までに制限される
 		new Game.Upgrade('Fortune #100',loc("All buildings and upgrades are <b>%1% cheaper</b>.",1)+' '+loc("Cookie production multiplier <b>+%1%</b>.",1)+'<q>True wealth is counted in gifts.</q>',
 		Game.Tiers['fortune'].price*100000,[0,0]);Game.MakeTiered(Game.last,'fortune',10);
 		Game.last.priceFunc=function(me){return Math.min(me.basePrice,Game.unbuffedCps*60*60*24);}
@@ -16705,8 +16749,8 @@ Game.Launch=function()
 			/*=====================================================================================
 			UNLOCKING STUFF
 			=======================================================================================*/
-			if (Game.T%(Game.fps)==0 && Math.random()<1/1000000) Game.Win('Just plain lucky');//1 chance in 1,000,000 every second achievement
-			if (Game.T%(Game.fps*5)==0 && Game.ObjectsById.length>0)//check some achievements and upgrades
+			if (Game.T%(Game.fps)==0 && Math.random()<1/1000000) Game.Win('Just plain lucky');// 毎秒 100万分の1 の確率で達成される実績
+			if (Game.T%(Game.fps*5)==0 && Game.ObjectsById.length>0)// いくつかの実績やアップグレードをチェックする
 			{
 				if (isNaN(Game.cookies)) {Game.cookies=0;Game.cookiesEarned=0;Game.recalculateGains=1;}
 				
@@ -16715,7 +16759,7 @@ Game.Launch=function()
 				
 				if (!Game.fullDate || (Date.now()-Game.fullDate)>=365*24*60*60*1000) Game.Win('So much to do so much to see');
 				
-				if (Game.cookiesEarned>=1000000 && (Game.ascensionMode==1 || Game.resets==0))//challenge run or hasn't ascended yet
+				if (Game.cookiesEarned>=1000000 && (Game.ascensionMode==1 || Game.resets==0))// チャレンジモード中、またはまだ転生していない
 				{
 					if (timePlayed<=1000*60*35) Game.Win('Speed baking I');
 					if (timePlayed<=1000*60*25) Game.Win('Speed baking II');
@@ -16939,7 +16983,7 @@ Game.Launch=function()
 			var cookiesToNext=Game.HowManyCookiesReset(ascendNowToOwn+1)-(Game.cookiesEarned+Game.cookiesReset);
 			var percent=1-(cookiesToNext/nextChipAt);
 			
-			//fill the tooltip under the Legacy tab
+		// レガシータブの下のツールチップを埋める
 			var date=new Date();
 			date.setTime(Date.now()-Game.startDate);
 			var timeInSeconds=date.getTime()/1000;
@@ -16959,13 +17003,14 @@ Game.Launch=function()
 			else str+=loc("Ascending now would grant you<br><b>%1 prestige levels</b> (+%2% CpS)<br>and <b>%3 heavenly chips</b> to spend.",[Beautify(ascendNowToGet),Beautify(ascendNowToGet),Beautify(ascendNowToGet)]);
 			if (cookiesToNext>=0)
 			{
-				//note: cookiesToNext can be negative at higher HC amounts due to precision loss. we simply hide it in such cases, as this usually only occurs when the gap is small and rapidly overcome anyway
+				// 注意: 高いHC（ヒーリングクッキー/ヘブンリーチープス）量の場合、精度の問題で cookiesToNext（次のクッキーまでの数）が負の値になることがあります。
+				// このような場合は単純に非表示にします。通常、差が小さくすぐに埋まってしまうためです。
 				str+='<div class="line"></div>';
 				str+=loc("You need <b>%1 more cookies</b> for the next level.",Beautify(cookiesToNext))+'<br>';
 			}
 			l('ascendTooltip').innerHTML=str;
 			
-			if (ascendNowToGet>0)//show number saying how many chips you'd get resetting now
+			if (ascendNowToGet>0)// 今リセットしたら何枚チップがもらえるかを数字で表示する
 			{
 				Game.ascendNumber.textContent='+'+SimpleBeautify(ascendNowToGet);
 				Game.ascendNumber.style.display='block';
