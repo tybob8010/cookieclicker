@@ -1,21 +1,34 @@
-/*
-Orteil's crappy dungeon generation library, 2013
-Unfinished and buggy, use at your own risk (please credit)
+/* Orteilのクソみたいなダンジョン生成ライブラリ（2013年）
+未完成＆バグだらけ。使うなら自己責任で（クレジット表記してね）
 http://orteil.dashnet.org
 
-Rough process (might or might not be what actually happens) :
-1 make a room in the middle
-2 pick one of its walls (not corners)
-3 select a free tile on the other side of that wall
-4 iteratively expand the selection in one (corridors) or two (rooms) directions, stopping when we meet a wall or when we're above the size threshold
-5 compute that selection into a room
-6 add decorations to the room (pillars, water) but only on the center tiles, as to leave free passages (sprinkle destructible decorations anywhere)
-7 take a random floor tile in the room and repeat step 4, but don't stop at the walls of this room (this creates branching) - repeat about 5 times for interesting shapes
-8 add those branches to the room
-9 carve the room into the map, and set the initially selected wall as a door - set the new room's parent to the previous room, and add it to its parent's children
-10 repeat step 2 with any free wall on the map until the amount of tiles dug is above the desired fill ratio
+大まかな処理の流れ
+（実際に本当にこう動いてるかは怪しい）：
 
-Note : I should probably switch the rendering to canvas to allow stuff like occlusion shadows and lights
+1. マップ中央に部屋を1つ作る  
+2. その部屋の壁の1つを選ぶ（角は除外）  
+3. その壁の向こう側にある空きタイルを1つ選択  
+4. その選択範囲を、1方向（通路）または2方向（部屋）に
+   繰り返し拡張する  
+   ・壁にぶつかる  
+   ・サイズ上限を超える  
+   のどちらかで停止  
+5. その選択範囲を部屋として確定  
+6. 部屋に装飾を追加（柱、水など）  
+   ただし通路を塞がないよう、中央タイルのみに配置  
+   （壊せる装飾はどこにでもランダム配置してOK）  
+7. 部屋内のランダムな床タイルを1つ選び、手順4を再実行  
+   ※このとき、この部屋の壁では止めない（分岐を作るため）  
+   面白い形にするため、だいたい5回くらい繰り返す  
+8. それらの分岐を部屋に追加  
+9. 部屋をマップに掘り込み、最初に選んだ壁をドアに設定  
+   新しい部屋の親を前の部屋に設定し、親の子リストに追加  
+10. マップ上の空いている壁を使って手順2を繰り返す  
+    掘られたタイル数が、目標の充填率を超えるまで続ける  
+
+注意：
+レンダリングはCanvasに切り替えたほうがいいかも。
+そうすれば、遮蔽シャドウやライティングみたいな表現ができる。
 */
 
 if (1==1 || undefined==Math.seedrandom)
