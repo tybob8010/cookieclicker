@@ -2,3 +2,5 @@ javascript:(function(){ Game.LoadMod("https://github.erbkaiser.com/FrozenCookies
 ↑この形にしなきゃいけない
 
 javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/MODs/testMod.js"); })();
+
+javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/MODs/mod1.js"); })();
