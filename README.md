@@ -1,20 +1,32 @@
-# cookieclicker
+# CookieClicker
 
 <img src="img/perfectCookie.png" width="128">
 
-The original game can be found at http://orteil.dashnet.org/cookieclicker/
+オリジナルのゲームはこちらです：
+http://orteil.dashnet.org/cookieclicker/
 
-This mirror for, errrr, like, educational purpose, either to download for your own offline education or to be played online from http://ozh.github.io/cookieclicker/ if you cannot "educate" yourself on the original URL
+**オリジナルゲームをリスペクトしてください！**
 
-### How to update
+このミラーは、えーっと……一応“教育目的”ということで  
+オフラインで自分用にダウンロードして“学習”したり、  
+オリジナルのURLで“学習”できない場合は、以下のURLからオンラインでプレイできます。
 
-If the original game updates, here is how you can update the mirror:
+https://tybob8010.github.io/cookieclicker/
 
-#### 1. Fetch all new images :
+↓フェッチ元
+http://ozh.github.io/cookieclicker/
 
-From the root,
 
-Set up user agent:
+
+### アップデート方法
+
+オリジナルのゲームが更新された場合、以下の手順でミラーを更新できます：
+
+#### 1. 新しい画像をすべて取得する :
+
+ルートディレクトリから実行します。
+
+ユーザーエージェントを設定：
 * `USER="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"`
 
 * `cd img/`
@@ -22,27 +34,27 @@ Set up user agent:
 * `grep -v PARENTDIR index.html | grep '\[IMG' | grep -Po 'a href="\K.*?(?=")' | sed 's/\?.*//' > _imglist.txt`
 * `wget --user-agent="$USER" -N -i _imglist.txt -B http://orteil.dashnet.org/cookieclicker/img/`
 
-#### 2. Fetch all new sounds :
+#### 2.新しいサウンドをすべて取得する :
 
-Similarly, from the root :
+同様に、ルートディレクトリから実行します：
 
 * `cd snd/`
 * `wget --user-agent="$USER" --convert-links -O index.html http://orteil.dashnet.org/cookieclicker/snd/`
 * `grep -v PARENTDIR index.html | grep '\[SND' | grep -Po 'a href="\K.*?(?=")' | sed 's/\?.*//' > _sndlist.txt`
 * `wget --user-agent="$USER" -N -i _sndlist.txt -B http://orteil.dashnet.org/cookieclicker/snd/`
 
-#### 3. Fetch all new translations :
+#### 3. 新しい翻訳ファイルをすべて取得する :
 
-Similarly, from the root :
+同様に、ルートディレクトリから実行します：
 
 * `cd loc/`
 * `wget --user-agent="$USER" --convert-links -O index.html http://orteil.dashnet.org/cookieclicker/loc/`
 * `grep -v PARENTDIR index.html | grep '\[TXT' | grep -Po 'a href="\K.*?(?=")' | sed 's/\?.*//' > _loclist.txt`
 * `wget --user-agent="$USER" -i _loclist.txt http://orteil.dashnet.org/cookieclicker/loc/`
 
-#### 4. Update `js` and `html` files :
+#### 4. `js` および `html` ファイルを更新する :
 
-From the root directory :
+同様に、ルートディレクトリから実行します：
 
 * Fetch the updated `index.html` file: `wget --user-agent="$USER" -O index.html http://orteil.dashnet.org/cookieclicker/` 
 * Fetch the updated `style.css` file: `wget --user-agent="$USER" -O style.css http://orteil.dashnet.org/cookieclicker/style.css`
@@ -51,6 +63,6 @@ From the root directory :
 * In `main.js` there is a nonfunctional URL we need to change: 
   * Find `DataDir=window.location.origin+'/data/';`, and change to `DataDir='https://orteil.dashnet.org/data/';`
 
-#### 5. Report update here :)
+#### 5. 更新内容を報告してください :)
 
-If you happen to update, please make a pull request for others to benefit, thanks!
+もし更新できた場合は、他の人のためにもプルリクエストを作成してください。ありがとうございます！
