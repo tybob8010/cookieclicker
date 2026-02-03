@@ -1,3 +1,4 @@
-﻿//this lets us detect adblockers so we can adjust the layout in case ads aren't shown ! (we're not using this for anything weird, promise !)
-//this works because an adblocker will usually block this file from being embedded at all
+﻿// これにより、広告ブロッカーを検出できます。広告が表示されない場合にレイアウトを調整するためです！
+// （変なことに使っているわけではありません、約束です！）
+// これは、広告ブロッカーが通常このファイルの読み込み自体をブロックしてしまうため機能します
 var showAds=true;

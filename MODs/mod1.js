@@ -4,7 +4,7 @@ Game.registerMod('mod1', {
         Game.Notify('Test Mod Loaded!', 'ようこそ、テストMODが有効になりました', '', 3);
 
         // perfectCookie.png を perfectoCookie2.png に置き換え
-        var newCookieUrl = 'https://raw.githubusercontent.com/tybob8010/cookieclicker/gh-pages/img/perfectCookie%202.png';
+        var newCookieUrl = 'https://raw.githubusercontent.com/tybob8010/cookieclicker/gh-pages/img/perfectCookie%203.png';
         if (Game.Loader) {
             Game.Loader.Replace('perfectCookie.png', newCookieUrl);
         }
