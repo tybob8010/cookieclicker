@@ -350,8 +350,8 @@ var SimpleBeautify=function(val)
 
 var beautifyInTextFilter=/(([\d]+[,]*)+)/g;//new regex
 function BeautifyInTextFunction(str){return Beautify(parseInt(str.replace(/,/g,''),10));};
-function BeautifyInText(str) {return str.replace(beautifyInTextFilter,BeautifyInTextFunction);}//reformat every number inside a string
-function BeautifyAll()//run through upgrades and achievements to reformat the numbers
+function BeautifyInText(str) {return str.replace(beautifyInTextFilter,BeautifyInTextFunction);}//// 文字列内のすべての数字の形式を整える
+function BeautifyAll()// アップグレードや実績を順番に処理して、数字の形式を整える
 {
 	var func=function(what){what.ddesc=BeautifyInText(what.ddesc);}
 	for (var i in Game.UpgradesById){Game.UpgradesById[i].ddesc=BeautifyInText(Game.UpgradesById[i].ddesc);}
@@ -2161,36 +2161,37 @@ Game.Launch=function()
 			return result;
 		}
 		
-		Game.cookiesEarned=0;//all cookies earned during gameplay
-		Game.cookies=0;//cookies
-		Game.cookiesd=0;//cookies display
-		Game.cookiesPs=1;//cookies per second (to recalculate with every new purchase)
-		Game.cookiesPsRaw=0;//raw cookies per second
-		Game.cookiesPsRawHighest=0;//highest raw cookies per second this ascension
-		Game.cookiesReset=0;//cookies lost to resetting (used to determine prestige and heavenly chips)
-		Game.cookieClicks=0;//+1 for each click on the cookie
-		Game.goldenClicks=0;//+1 for each golden cookie clicked (all time)
-		Game.goldenClicksLocal=0;//+1 for each golden cookie clicked (this game only)
-		Game.missedGoldenClicks=0;//+1 for each golden cookie missed
-		Game.handmadeCookies=0;//all the cookies made from clicking the cookie
-		Game.milkProgress=0;//you gain a little bit for each achievement. Each increment of 1 is a different milk displayed.
-		Game.milkH=Game.milkProgress/2;//milk height, between 0 and 1 (although should never go above 0.5)
-		Game.milkHd=0;//milk height display
-		Game.milkType=0;//custom milk
-		Game.bgType=0;//custom background
-		Game.chimeType=0;//golden cookie chime
-		Game.prestige=0;//prestige level (recalculated depending on Game.cookiesReset)
-		Game.heavenlyChips=0;//heavenly chips the player currently has
-		Game.heavenlyChipsDisplayed=0;//ticks up or down to match Game.heavenlyChips
-		Game.heavenlyChipsSpent=0;//heavenly chips spent on cookies, upgrades and such
-		Game.heavenlyCookies=0;//how many cookies have we baked from chips (unused)
-		Game.permanentUpgrades=[-1,-1,-1,-1,-1];
-		Game.ascensionMode=0;//type of challenge run if any
-		Game.resets=0;//reset counter
-		Game.lumps=-1;//sugar lumps
-		Game.lumpsTotal=-1;//sugar lumps earned across all playthroughs (-1 means they haven't even started yet)
-		Game.lumpT=Date.now();//time when the current lump started forming
-		Game.lumpRefill=0;//time left before a sugar lump can be used again (on minigame refills etc) in logic frames
+		Game.cookiesEarned = 0; // ゲームプレイ中に獲得した総クッキー数
+		Game.cookies = 0;       // 現在のクッキー数
+		Game.cookiesd = 0;      // 表示用クッキー数
+		Game.cookiesPs = 1;     // 1秒あたりのクッキー生成量（購入ごとに再計算）
+		Game.cookiesPsRaw = 0;  // 生の1秒あたりクッキー生成量
+		Game.cookiesPsRawHighest = 0; // 今回の転生中での最高生クッキー生成量
+		Game.cookiesReset = 0;  // リセット時に失ったクッキー（プレステージや天上チップ計算用）
+		Game.cookieClicks = 0;  // クッキークリックごとの+1
+		Game.goldenClicks = 0;  // ゴールデンクッキークリック数（全プレイ累計）
+		Game.goldenClicksLocal = 0; // ゴールデンクッキークリック数（現在のプレイのみ）
+		Game.missedGoldenClicks = 0; // 逃したゴールデンクッキーの数
+		Game.handmadeCookies = 0;    // クリックで作ったクッキーの総数
+		Game.milkProgress = 0;       // 実績ごとに少しずつ増える。1増えるごとに表示されるミルクが変わる
+		Game.milkH = Game.milkProgress / 2; // ミルクの高さ（0～1、ただし0.5を超えることはないはず）
+		Game.milkHd = 0;             // ミルクの高さの表示用
+		Game.milkType = 0;           // カスタムミルクの種類
+		Game.bgType = 0;             // カスタム背景の種類
+		Game.chimeType = 0;          // ゴールデンクッキーの音タイプ
+		Game.prestige = 0;           // プレステージレベル（Game.cookiesResetに基づき再計算）
+		Game.heavenlyChips = 0;      // 所持中の天上チップ数
+		Game.heavenlyChipsDisplayed = 0; // 表示用の天上チップ数（Game.heavenlyChipsに合わせて増減）
+		Game.heavenlyChipsSpent = 0; // クッキーやアップグレードなどに使った天上チップ数
+		Game.heavenlyCookies = 0;    // 天上チップから焼いたクッキーの数（未使用）
+		Game.permanentUpgrades = [-1,-1,-1,-1,-1]; // 永続アップグレード（未取得は-1）
+		Game.ascensionMode = 0;      // チャレンジプレイ中かどうか
+		Game.resets = 0;             // リセット回数
+		Game.lumps = -1;             // シュガーランプ数
+		Game.lumpsTotal = -1;        // 全プレイで獲得したシュガーランプ総数（-1はまだ開始していないことを意味）
+		Game.lumpT = Date.now();     // 現在のランプが生成開始された時間
+		Game.lumpRefill = 0;         // シュガーランプを再利用可能になるまでの残り時間（ミニゲームのリフィルなどで使用）
+
 		
 		Game.makeSeed=function()
 		{
@@ -2199,38 +2200,43 @@ Game.Launch=function()
 			for (var i=0;i<5;i++){str+=choose(chars);}
 			return str;
 		}
-		Game.seed=Game.makeSeed();//each run has its own seed, used for deterministic random stuff
-		
-		Game.volume=75;//sound volume
-		Game.volumeMusic=50;//music volume
-		
-		Game.elderWrath=0;
-		Game.elderWrathOld=0;
-		Game.elderWrathD=0;
-		Game.pledges=0;
-		Game.pledgeT=0;
-		Game.researchT=0;
-		Game.nextResearch=0;
-		Game.cookiesSucked=0;//cookies sucked by wrinklers
-		Game.cpsSucked=0;//percent of CpS being sucked by wrinklers
-		Game.wrinklersPopped=0;
-		Game.santaLevel=0;
-		Game.reindeerClicked=0;
-		Game.seasonT=0;
-		Game.seasonUses=0;
-		Game.dragonLevel=0;
-		Game.dragonAura=0;
-		Game.dragonAura2=0;
-		
-		Game.fortuneGC=0;
-		Game.fortuneCPS=0;
-		
-		Game.blendModesOn=(document.createElement('detect').style.mixBlendMode==='');
-		
-		Game.bg='';//background (grandmas and such)
-		Game.bgFade='';//fading to background
-		Game.bgR=0;//ratio (0 - not faded, 1 - fully faded)
-		Game.bgRd=0;//ratio displayed
+		Game.seed = Game.makeSeed(); // 各プレイごとに独自のシード値を生成（乱数などを決定的に扱うために使用）
+
+		Game.volume = 75;       // 効果音の音量（0～100）
+		Game.volumeMusic = 50;  // 音楽の音量（0～100）
+
+		Game.elderWrath = 0;    // 「古代の怒り」の現在値
+		Game.elderWrathOld = 0; // 「古代の怒り」の前回値
+		Game.elderWrathD = 0;   // 「古代の怒り」の変化量
+		Game.pledges = 0;       // 誓約数（Grandmapocalypseの進行状況関連）
+		Game.pledgeT = 0;       // 誓約タイマー
+		Game.researchT = 0;     // 研究のタイマー
+		Game.nextResearch = 0;  // 次の研究に必要な値
+
+		Game.cookiesSucked = 0; // Wrinkler（クッキー吸収生物）によって吸われたクッキー数
+		Game.cpsSucked = 0;     // Wrinklerに吸われているCpS（1秒あたりのクッキー量）の割合
+		Game.wrinklersPopped = 0; // 弾けたWrinklerの数
+
+		Game.santaLevel = 0;     // サンタのレベル
+		Game.reindeerClicked = 0; // クリックされたトナカイの数
+		Game.seasonT = 0;        // 現在の季節タイマー
+		Game.seasonUses = 0;     // 季節イベントの使用回数
+
+		Game.dragonLevel = 0;    // ドラゴンのレベル
+		Game.dragonAura = 0;     // ドラゴンのオーラ1
+		Game.dragonAura2 = 0;    // ドラゴンのオーラ2
+
+		Game.fortuneGC = 0;      // フォーチュンクッキーのゴールデンクッキー出現カウンター
+		Game.fortuneCPS = 0;     // フォーチュンクッキーによるCpSボーナス
+
+		Game.blendModesOn = (document.createElement('detect').style.mixBlendMode===''); 
+		// ブラウザがmixBlendModeに対応しているかどうか（グラフィック用）
+
+		Game.bg = '';     // 背景（おばあさんや建物など）
+		Game.bgFade = ''; // 背景のフェード中（切り替え用）
+		Game.bgR = 0;     // フェードの比率（0＝未フェード、1＝完全フェード）
+		Game.bgRd = 0;    // 表示用のフェード比率
+
 		
 		Game.windowW=window.innerWidth;
 		Game.windowH=window.innerHeight;
