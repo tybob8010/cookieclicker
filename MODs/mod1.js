@@ -1,21 +1,14 @@
 Game.registerMod('mod1', {
     init: function() {
-        // 読み込まれた時にメッセージを出す
-        Game.Notify('mod1 Loaded!', 'ようこそ mod1 が有効になりました', '', 3);
+        // MOD 読み込み時の通知
+        Game.Notify('Test Mod Loaded!', 'ようこそ、テストMODが有効になりました', '', 3);
 
-        // perfectCookie.png を perfectoCookie2.png に置き換える
+        // perfectCookie.png を perfectoCookie2.png に置き換え
+        var newCookieUrl = 'https://raw.githubusercontent.com/tybob8010/cookieclicker/gh-pages/img/perfectCookie%202.png';
         if (Game.Loader) {
-            Game.Loader.Replace('perfectCookie.png', 'perfectoCookie 2.png');
+            Game.Loader.Replace('perfectCookie.png', newCookieUrl);
         }
-
-        // ゲーム初期化後にも置き換えを保証
-        Game.registerHook('reset', function() {
-            if (Game.Loader) {
-                Game.Loader.Replace('perfectCookie.png', 'perfectoCookie 2.png');
-            }
-        });
     },
-
-    save: function() { return ''; },
-    load: function(str) { }
+    save: function(){ return ''; },
+    load: function(str){ }
 });
