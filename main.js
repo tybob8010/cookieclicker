@@ -62,7 +62,7 @@ function romanize(num){
 	return Array(+digits.join("")+1).join("M")+roman;
 }
 
-// soundjay.com 由来の効果音を無効化（ごめんね）
+//soundjay.com 由来の効果音を無効化（ごめんね）
 var realAudio=typeof Audio!=='undefined'?Audio:function(){return {}};//backup real audio
 Audio=function(src){
 	if (src && src.indexOf('soundjay')>-1) {Game.Popup('Sorry, no sounds hotlinked from soundjay.com.');this.play=function(){};}
@@ -83,13 +83,13 @@ function randomFloor(x) {if ((x%1)<Math.random()) return Math.floor(x); else ret
 function shuffle(array)
 {
 	var counter = array.length, temp, index;
-	// 配列に要素があるあいだ
+	//配列に要素があるあいだ
 	while (counter--)
 	{
-		// ランダムなインデックスを選ぶ
+		//ランダムなインデックスを選ぶ
 		index = (Math.random() * counter) | 0;
 
-		// そして最後の要素と入れ替える
+		//そして最後の要素と入れ替える
 		temp = array[counter];
 		array[counter] = array[index];
 		array[index] = temp;
@@ -117,7 +117,7 @@ function getCenter(el){
 	return [bounds.centerx,bounds.centery];
 };
 Element.prototype.getBounds=function(){
-	// 注意: prototype を呼び出すと動作が遅くなる場合があります！
+	//注意: prototype を呼び出すと動作が遅くなる場合があります！
 	var bounds=this.getBoundingClientRect();
 	var s=Game.scale;
 	bounds.x/=s;
@@ -216,7 +216,7 @@ var getJson=function(url,callback,error)
 		}catch(e){if (error) error(e);}
 	}
 	if (url.indexOf('?')==-1) url+='?'; else url+='&';
-	url+='nocache='+Math.floor(Date.now()/1000/60/30);// 30分単位でキャッシュする
+	url+='nocache='+Math.floor(Date.now()/1000/60/30);//30分単位でキャッシュする
 	xhr.open('GET',url,true);
 	xhr.send();
 	return true;
@@ -241,7 +241,7 @@ function toFixed(x)
 	return x;
 }
 
-// 美化および数値フォーマットは Frozen Cookies アドオン（http://cookieclicker.wikia.com/wiki/Frozen_Cookies_%28JavaScript_Add-on%29）から適用・調整
+//美化および数値フォーマットは Frozen Cookies アドオン（http://cookieclicker.wikia.com/wiki/Frozen_Cookies_%28JavaScript_Add-on%29）から適用・調整
 function formatEveryThirdPower(notations)
 {
 	return function (val)
@@ -316,9 +316,9 @@ var Beautify=function(val,floats)
 }
 var shortenNumber=function(val)
 {
-	// もし指数表記（科学的表記）がなければ、そのまま返す。そうでなければ：
-	// 最初の5桁（と小数点）だけを保持し、それ以外は四捨五入する
-	// 正しく動作するかどうかは保証されない
+	//もし指数表記（科学的表記）がなければ、そのまま返す。そうでなければ：
+	//最初の5桁（と小数点）だけを保持し、それ以外は四捨五入する
+	//正しく動作するかどうかは保証されない
 	if (val>=1000000 && isFinite(val))
 	{
 		var num=val.toString();
@@ -350,8 +350,8 @@ var SimpleBeautify=function(val)
 
 var beautifyInTextFilter=/(([\d]+[,]*)+)/g;//new regex
 function BeautifyInTextFunction(str){return Beautify(parseInt(str.replace(/,/g,''),10));};
-function BeautifyInText(str) {return str.replace(beautifyInTextFilter,BeautifyInTextFunction);}//// 文字列内のすべての数字の形式を整える
-function BeautifyAll()// アップグレードや実績を順番に処理して、数字の形式を整える
+function BeautifyInText(str) {return str.replace(beautifyInTextFilter,BeautifyInTextFunction);}////文字列内のすべての数字の形式を整える
+function BeautifyAll()//アップグレードや実績を順番に処理して、数字の形式を整える
 {
 	var func=function(what){what.ddesc=BeautifyInText(what.ddesc);}
 	for (var i in Game.UpgradesById){Game.UpgradesById[i].ddesc=BeautifyInText(Game.UpgradesById[i].ddesc);}
@@ -386,14 +386,14 @@ var locName='none';
 var locPatches=[];
 var locPlur='nplurals=2;plural=(n!=1);';//see http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html
 var locPlurFallback=locPlur;
-// 注意：複数形のインデックスは、最後に一致するものに繰り下げられます。
-// つまり、この場合「0」が返っても3番目の選択肢がなければ、2番目の選択肢を使います（それもなければ1番目を使用）
+//注意：複数形のインデックスは、最後に一致するものに繰り下げられます。
+//つまり、この場合「0」が返っても3番目の選択肢がなければ、2番目の選択肢を使います（それもなければ1番目を使用）
 var locStringsByPart={};
 var FindLocStringByPart=function(match)
 {
 	return locStringsByPart[match]||undefined;
 	/*
-	// 注意：処理が遅いので、初期化時だけ行うこと
+	//注意：処理が遅いので、初期化時だけ行うこと
 	for (var i in locStrings){
 		var bit=i.split(']');
 		if (bit[0].substring(1)==match) return i;
@@ -421,9 +421,9 @@ var Langs={
 	'SV':{file:'SV',nameEN:'Swedish',name:'Svenska',changeLanguage:'Spr&#xE5;k',icon:0,w:1},
 };
 
-// 注意：baseline（基準）は元の英語テキストにすべき
-// いくつかの場合、英語のテキストは他の言語とかなり異なることがあります。
-// このゲームは最初、翻訳を想定していなかったため、翻訳プロセスは複雑な文構造に対してうまく機能しないことがあります。
+//注意：baseline（基準）は元の英語テキストにすべき
+//いくつかの場合、英語のテキストは他の言語とかなり異なることがあります。
+//このゲームは最初、翻訳を想定していなかったため、翻訳プロセスは複雑な文構造に対してうまく機能しないことがあります。
 /*use:
 	loc('Plain text')
 	loc('Text where %1 is a parameter','something')
@@ -1009,9 +1009,9 @@ var SoundInsts=[];
 var SoundI=0;
 for (var i=0;i<12;i++){SoundInsts[i]=new Audio();}
 var pitchSupport=false;
-// 注意：仕様ではサポートされているとされているにもかかわらず、Chrome は webkitPreservesPitch をサポートしていません。
-// また、Firefox は playbackRate を変更すると短い音が途切れることがあります。
-// そのため、ブラウザが安定するまではこの機能を完全にオフにしています。
+//注意：仕様ではサポートされているとされているにもかかわらず、Chrome は webkitPreservesPitch をサポートしていません。
+//また、Firefox は playbackRate を変更すると短い音が途切れることがあります。
+//そのため、ブラウザが安定するまではこの機能を完全にオフにしています。
 //if (SoundInsts[0].preservesPitch || SoundInsts[0].mozPreservesPitch || SoundInsts[0].webkitPreservesPitch) pitchSupport=true;
 
 var PlaySound=function(url,vol,pitchVar)
@@ -1036,7 +1036,7 @@ var PlaySound=function(url,vol,pitchVar)
 		var sound=SoundInsts[SoundI];
 		SoundI++;
 		if (SoundI>=12) SoundI=0;
-		sound.src=Sounds[url].src;// 注意：Safari ではまだファイルが再読み込みされます
+		sound.src=Sounds[url].src;//注意：Safari ではまだファイルが再読み込みされます
 		//sound.currentTime=0;
 		sound.volume=Math.pow(volume*volumeSetting/100,2);
 		if (pitchSupport)
@@ -1133,15 +1133,15 @@ var Game={};
 	- "MODオブジェクト" は次のような構造のオブジェクトです：
 		{
 			init:function(){
-				// この関数はMODが登録された直後に呼ばれます
-				// フックをここで宣言します
+				//この関数はMODが登録された直後に呼ばれます
+				//フックをここで宣言します
 			},
 			save:function(){
-				// MODに関連付けられた永続データを保存するのに使います
+				//MODに関連付けられた永続データを保存するのに使います
 				return '保存する文字列';
 			},
 			load:function(str){
-				// 以前保存した文字列データを使って処理を行います
+				//以前保存した文字列データを使って処理を行います
 			},
 		}
 	- MODオブジェクトは、他のMODからアクセスできるように任意のデータや関数を含めることもできます
@@ -1318,7 +1318,7 @@ var Game={};
 		Game.Prompt('<id ModData><h3>'+loc("Mod data")+'</h3><div class="block">'+tinyIcon([16,5])+'<div></div>'+loc("These are the mods present in your save data. You may delete some of this data to make your save file smaller.")+'</div><div class="block" style="font-size:11px;">'+str+'</div>',[loc("Back")]);
 	}
 	
-	Game.LoadMod=LoadScript;// 指定されたURLからMODを読み込む
+	Game.LoadMod=LoadScript;//指定されたURLからMODを読み込む
 	if (false)
 	{
 		//EXAMPLE MOD
@@ -1337,7 +1337,7 @@ var Game={};
 				Game.registerHook('cps',function(cps){return cps*2;});
 			},
 			save:function(){
-				// 注意: ここでは扱いやすさと分かりやすさのためにJSON文字列化した形式を使っていますが、任意の文字列を保存することも可能です
+				//注意: ここでは扱いやすさと分かりやすさのためにJSON文字列化した形式を使っていますが、任意の文字列を保存することも可能です
 				return JSON.stringify({text:Game.playerIntro})
 			},
 			load:function(str){
@@ -1345,7 +1345,7 @@ var Game={};
 				if (data.text) Game.mods['test mod'].addIntro(data.text);
 			},
 			addIntro:function(text){
-				// 注意: これはMODのフックではなく、MOD内で定義されている単なる関数です
+				//注意: これはMODのフックではなく、MOD内で定義されている単なる関数です
 				Game.playerIntro=text||choose(['oh snap, it\'s','watch out, it\'s','oh no! here comes','hide your cookies, for here comes','behold! it\'s']);
 				if (!l('bakerySubtitle')) l('bakeryName').insertAdjacentHTML('afterend','<div id="bakerySubtitle" class="title" style="text-align:center;position:absolute;left:0px;right:0px;bottom:32px;font-size:12px;pointer-events:none;text-shadow:0px 1px 1px #000,0px 0px 4px #f00;opacity:0.8;"></div>');
 				l('bakerySubtitle').textContent='~'+Game.playerIntro+'~';
@@ -1353,9 +1353,9 @@ var Game={};
 		});
 	}
 	
-// 実行時に既存のキャンバス画像を新しいものに置き換える: Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
-// アップグレードや実績は icons.png 以外の画像を使うことも可能；アイコンは [posX, posY, 'http://example.com/myIcons.png'] の形式で指定
-// アチーブメントやアップグレードのアンロック方法については「UNLOCKING STUFF（アンロック関連）」セクションを参照
+//実行時に既存のキャンバス画像を新しいものに置き換える: Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
+//アップグレードや実績は icons.png 以外の画像を使うことも可能；アイコンは [posX, posY, 'http://example.com/myIcons.png'] の形式で指定
+//アチーブメントやアップグレードのアンロック方法については「UNLOCKING STUFF（アンロック関連）」セクションを参照
 })();
 
 Game.version=VERSION;
@@ -2161,36 +2161,36 @@ Game.Launch=function()
 			return result;
 		}
 		
-		Game.cookiesEarned = 0; // ゲームプレイ中に獲得した総クッキー数
-		Game.cookies = 0;       // 現在のクッキー数
-		Game.cookiesd = 0;      // 表示用クッキー数
-		Game.cookiesPs = 1;     // 1秒あたりのクッキー生成量（購入ごとに再計算）
-		Game.cookiesPsRaw = 0;  // 生の1秒あたりクッキー生成量
-		Game.cookiesPsRawHighest = 0; // 今回の転生中での最高生クッキー生成量
-		Game.cookiesReset = 0;  // リセット時に失ったクッキー（プレステージや天上チップ計算用）
-		Game.cookieClicks = 0;  // クッキークリックごとの+1
-		Game.goldenClicks = 0;  // ゴールデンクッキークリック数（全プレイ累計）
-		Game.goldenClicksLocal = 0; // ゴールデンクッキークリック数（現在のプレイのみ）
-		Game.missedGoldenClicks = 0; // 逃したゴールデンクッキーの数
-		Game.handmadeCookies = 0;    // クリックで作ったクッキーの総数
-		Game.milkProgress = 0;       // 実績ごとに少しずつ増える。1増えるごとに表示されるミルクが変わる
-		Game.milkH = Game.milkProgress / 2; // ミルクの高さ（0～1、ただし0.5を超えることはないはず）
-		Game.milkHd = 0;             // ミルクの高さの表示用
-		Game.milkType = 0;           // カスタムミルクの種類
-		Game.bgType = 0;             // カスタム背景の種類
-		Game.chimeType = 0;          // ゴールデンクッキーの音タイプ
-		Game.prestige = 0;           // プレステージレベル（Game.cookiesResetに基づき再計算）
-		Game.heavenlyChips = 0;      // 所持中の天上チップ数
-		Game.heavenlyChipsDisplayed = 0; // 表示用の天上チップ数（Game.heavenlyChipsに合わせて増減）
-		Game.heavenlyChipsSpent = 0; // クッキーやアップグレードなどに使った天上チップ数
-		Game.heavenlyCookies = 0;    // 天上チップから焼いたクッキーの数（未使用）
-		Game.permanentUpgrades = [-1,-1,-1,-1,-1]; // 永続アップグレード（未取得は-1）
-		Game.ascensionMode = 0;      // チャレンジプレイ中かどうか
-		Game.resets = 0;             // リセット回数
-		Game.lumps = -1;             // シュガーランプ数
-		Game.lumpsTotal = -1;        // 全プレイで獲得したシュガーランプ総数（-1はまだ開始していないことを意味）
-		Game.lumpT = Date.now();     // 現在のランプが生成開始された時間
-		Game.lumpRefill = 0;         // シュガーランプを再利用可能になるまでの残り時間（ミニゲームのリフィルなどで使用）
+		Game.cookiesEarned = 0; //ゲームプレイ中に獲得した総クッキー数
+		Game.cookies = 0;       //現在のクッキー数
+		Game.cookiesd = 0;      //表示用クッキー数
+		Game.cookiesPs = 1;     //1秒あたりのクッキー生成量（購入ごとに再計算）
+		Game.cookiesPsRaw = 0;  //生の1秒あたりクッキー生成量
+		Game.cookiesPsRawHighest = 0; //今回の転生中での最高生クッキー生成量
+		Game.cookiesReset = 0;  //リセット時に失ったクッキー（プレステージや天上チップ計算用）
+		Game.cookieClicks = 0;  //クッキークリックごとの+1
+		Game.goldenClicks = 0;  //ゴールデンクッキークリック数（全プレイ累計）
+		Game.goldenClicksLocal = 0; //ゴールデンクッキークリック数（現在のプレイのみ）
+		Game.missedGoldenClicks = 0; //逃したゴールデンクッキーの数
+		Game.handmadeCookies = 0;    //クリックで作ったクッキーの総数
+		Game.milkProgress = 0;       //実績ごとに少しずつ増える。1増えるごとに表示されるミルクが変わる
+		Game.milkH = Game.milkProgress / 2; //ミルクの高さ（0～1、ただし0.5を超えることはないはず）
+		Game.milkHd = 0;             //ミルクの高さの表示用
+		Game.milkType = 0;           //カスタムミルクの種類
+		Game.bgType = 0;             //カスタム背景の種類
+		Game.chimeType = 0;          //ゴールデンクッキーの音タイプ
+		Game.prestige = 0;           //プレステージレベル（Game.cookiesResetに基づき再計算）
+		Game.heavenlyChips = 0;      //所持中の天上チップ数
+		Game.heavenlyChipsDisplayed = 0; //表示用の天上チップ数（Game.heavenlyChipsに合わせて増減）
+		Game.heavenlyChipsSpent = 0; //クッキーやアップグレードなどに使った天上チップ数
+		Game.heavenlyCookies = 0;    //天上チップから焼いたクッキーの数（未使用）
+		Game.permanentUpgrades = [-1,-1,-1,-1,-1]; //永続アップグレード（未取得は-1）
+		Game.ascensionMode = 0;      //チャレンジプレイ中かどうか
+		Game.resets = 0;             //リセット回数
+		Game.lumps = -1;             //シュガーランプ数
+		Game.lumpsTotal = -1;        //全プレイで獲得したシュガーランプ総数（-1はまだ開始していないことを意味）
+		Game.lumpT = Date.now();     //現在のランプが生成開始された時間
+		Game.lumpRefill = 0;         //シュガーランプを再利用可能になるまでの残り時間（ミニゲームのリフィルなどで使用）
 
 		
 		Game.makeSeed=function()
@@ -2200,42 +2200,42 @@ Game.Launch=function()
 			for (var i=0;i<5;i++){str+=choose(chars);}
 			return str;
 		}
-		Game.seed = Game.makeSeed(); // 各プレイごとに独自のシード値を生成（乱数などを決定的に扱うために使用）
+		Game.seed = Game.makeSeed(); //各プレイごとに独自のシード値を生成（乱数などを決定的に扱うために使用）
 
-		Game.volume = 75;       // 効果音の音量（0～100）
-		Game.volumeMusic = 50;  // 音楽の音量（0～100）
+		Game.volume = 75;       //効果音の音量（0～100）
+		Game.volumeMusic = 50;  //音楽の音量（0～100）
 
-		Game.elderWrath = 0;    // 「古代の怒り」の現在値
-		Game.elderWrathOld = 0; // 「古代の怒り」の前回値
-		Game.elderWrathD = 0;   // 「古代の怒り」の変化量
-		Game.pledges = 0;       // 誓約数（Grandmapocalypseの進行状況関連）
-		Game.pledgeT = 0;       // 誓約タイマー
-		Game.researchT = 0;     // 研究のタイマー
-		Game.nextResearch = 0;  // 次の研究に必要な値
+		Game.elderWrath = 0;    //「古代の怒り」の現在値
+		Game.elderWrathOld = 0; //「古代の怒り」の前回値
+		Game.elderWrathD = 0;   //「古代の怒り」の変化量
+		Game.pledges = 0;       //誓約数（Grandmapocalypseの進行状況関連）
+		Game.pledgeT = 0;       //誓約タイマー
+		Game.researchT = 0;     //研究のタイマー
+		Game.nextResearch = 0;  //次の研究に必要な値
 
-		Game.cookiesSucked = 0; // Wrinkler（クッキー吸収生物）によって吸われたクッキー数
-		Game.cpsSucked = 0;     // Wrinklerに吸われているCpS（1秒あたりのクッキー量）の割合
-		Game.wrinklersPopped = 0; // 弾けたWrinklerの数
+		Game.cookiesSucked = 0; //Wrinkler（クッキー吸収生物）によって吸われたクッキー数
+		Game.cpsSucked = 0;     //Wrinklerに吸われているCpS（1秒あたりのクッキー量）の割合
+		Game.wrinklersPopped = 0; //弾けたWrinklerの数
 
-		Game.santaLevel = 0;     // サンタのレベル
-		Game.reindeerClicked = 0; // クリックされたトナカイの数
-		Game.seasonT = 0;        // 現在の季節タイマー
-		Game.seasonUses = 0;     // 季節イベントの使用回数
+		Game.santaLevel = 0;     //サンタのレベル
+		Game.reindeerClicked = 0; //クリックされたトナカイの数
+		Game.seasonT = 0;        //現在の季節タイマー
+		Game.seasonUses = 0;     //季節イベントの使用回数
 
-		Game.dragonLevel = 0;    // ドラゴンのレベル
-		Game.dragonAura = 0;     // ドラゴンのオーラ1
-		Game.dragonAura2 = 0;    // ドラゴンのオーラ2
+		Game.dragonLevel = 0;    //ドラゴンのレベル
+		Game.dragonAura = 0;     //ドラゴンのオーラ1
+		Game.dragonAura2 = 0;    //ドラゴンのオーラ2
 
-		Game.fortuneGC = 0;      // フォーチュンクッキーのゴールデンクッキー出現カウンター
-		Game.fortuneCPS = 0;     // フォーチュンクッキーによるCpSボーナス
+		Game.fortuneGC = 0;      //フォーチュンクッキーのゴールデンクッキー出現カウンター
+		Game.fortuneCPS = 0;     //フォーチュンクッキーによるCpSボーナス
 
 		Game.blendModesOn = (document.createElement('detect').style.mixBlendMode===''); 
-		// ブラウザがmixBlendModeに対応しているかどうか（グラフィック用）
+		//ブラウザがmixBlendModeに対応しているかどうか（グラフィック用）
 
-		Game.bg = '';     // 背景（おばあさんや建物など）
-		Game.bgFade = ''; // 背景のフェード中（切り替え用）
-		Game.bgR = 0;     // フェードの比率（0＝未フェード、1＝完全フェード）
-		Game.bgRd = 0;    // 表示用のフェード比率
+		Game.bg = '';     //背景（おばあさんや建物など）
+		Game.bgFade = ''; //背景のフェード中（切り替え用）
+		Game.bgR = 0;     //フェードの比率（0＝未フェード、1＝完全フェード）
+		Game.bgRd = 0;    //表示用のフェード比率
 
 		
 		Game.windowW=window.innerWidth;
@@ -2257,10 +2257,10 @@ Game.Launch=function()
 			var h=window.innerHeight;
 			
 			/*
-				// ウィンドウが大きすぎる場合、ゲームのサイズを調整します
-				// これらの数値には特に根拠はありません
-				// 注意：利用可能なら window.screen.width を使うこともできます
-				// この機能にはいくつか視覚的な問題があります。いずれ修正予定です
+				//ウィンドウが大きすぎる場合、ゲームのサイズを調整します
+				//これらの数値には特に根拠はありません
+				//注意：利用可能なら window.screen.width を使うこともできます
+				//この機能にはいくつか視覚的な問題があります。いずれ修正予定です
 				var area = Math.sqrt(w * h);
 				if (area < 1500) zoom = 1;
 				else if (area < 2000) zoom = 1.5;
@@ -2311,45 +2311,45 @@ Game.Launch=function()
 		}
 		Game.resize();
 		
-		Game.startDate = parseInt(Date.now()); // ゲームを始めた日時（プレイ開始時刻）
-		Game.fullDate = parseInt(Date.now());  // ゲームを始めた日時（リセット後も引き継がれる）
-		Game.lastDate = parseInt(Date.now());  // 最後にゲームを保存した日時（「ゲームを閉じてから作ったクッキー数」計算に使用）
+		Game.startDate = parseInt(Date.now()); //ゲームを始めた日時（プレイ開始時刻）
+		Game.fullDate = parseInt(Date.now());  //ゲームを始めた日時（リセット後も引き継がれる）
+		Game.lastDate = parseInt(Date.now());  //最後にゲームを保存した日時（「ゲームを閉じてから作ったクッキー数」計算に使用）
 
 		Game.cookiesSent=0;Game.cookiesReceived=0;
 		
 		Game.prefs=[];
 		Game.DefaultPrefs=function()
 		{
-			Game.prefs.particles = 1;      // パーティクル効果：落ちるクッキーなど
-			Game.prefs.numbers = 1;        // クッキーをクリックしたときに数字を表示
-			Game.prefs.autosave = 1;       // ゲームを1分おきくらいに自動保存
-			Game.prefs.autoupdate = 1;     // 30分ごとにサーバーにAJAXリクエスト（※無視される）
-			Game.prefs.milk = 1;           // ミルクを表示
-			Game.prefs.fancy = 1;          // CSSの影の効果（ブラウザによっては重い）
-			Game.prefs.warn = 0;           // ウィンドウを閉じる前の警告
-			Game.prefs.cursors = 1;        // カーソルを表示
-			Game.prefs.focus = 1;          // フォーカス外時は更新頻度を下げる
-			Game.prefs.popups = 0;         // 古いスタイルのポップアップ（もう使われない）
-			Game.prefs.format = 0;         // 数字を短縮表示
-			Game.prefs.notifs = 0;         // 通知のフェードを早める
-			Game.prefs.animate = 1;        // 建物をアニメーション表示
-			Game.prefs.wobbly = 1;         // クッキーをゆらゆらさせる
-			Game.prefs.monospace = 0;      // クッキー用の代替等幅フォント
-			Game.prefs.filters = 1;        // CSSフィルター効果（ブラウザによっては重い）
-			Game.prefs.cookiesound = 1;    // 新しいクッキークリック音を使用
-			Game.prefs.crates = 0;         // 統計のアイコンにクレートを表示
-			Game.prefs.altDraw = 0;        // 描画更新を requestAnimationFrame に変更（従来は固定30fps setTimeout）
-			Game.prefs.showBackupWarning = 1; // true の場合、セーブ読み込み時に「バックアップしましたか？」を表示
-			Game.prefs.extraButtons = 1;   // true の場合、ミュートボタンや建物マスターバーを表示
-			Game.prefs.askLumps = 0;       // true の場合、ラプス使用前に確認プロンプトを表示
-			Game.prefs.customGrandmas = 1; // true の場合、Patreonサポート者名をおばあちゃんに表示
-			Game.prefs.timeout = 0;        // true の場合、タイムアウト時に一時停止画面を表示
-			Game.prefs.cloudSave = 1;      // true の場合、Steamでクラウドセーブ/ロード
-			Game.prefs.bgMusic = 1;        // true の場合、Steam版でゲームが非フォーカス時も音楽を再生
-			Game.prefs.notScary = 0;       // true の場合、怖い要素をやや緩和（「眉毛モード」）
-			Game.prefs.fullscreen = 0;     // true の場合、Steam版はフルスクリーン
-			Game.prefs.screenreader = 0;   // true の場合、スクリーンリーダー用DOMを追加（リロード必要）
-			Game.prefs.discordPresence = 1; // true の場合、Discordステータスにゲームプレイ情報を表示
+			Game.prefs.particles = 1;      //パーティクル効果：落ちるクッキーなど
+			Game.prefs.numbers = 1;        //クッキーをクリックしたときに数字を表示
+			Game.prefs.autosave = 1;       //ゲームを1分おきくらいに自動保存
+			Game.prefs.autoupdate = 1;     //30分ごとにサーバーにAJAXリクエスト（※無視される）
+			Game.prefs.milk = 1;           //ミルクを表示
+			Game.prefs.fancy = 1;          //CSSの影の効果（ブラウザによっては重い）
+			Game.prefs.warn = 0;           //ウィンドウを閉じる前の警告
+			Game.prefs.cursors = 1;        //カーソルを表示
+			Game.prefs.focus = 1;          //フォーカス外時は更新頻度を下げる
+			Game.prefs.popups = 0;         //古いスタイルのポップアップ（もう使われない）
+			Game.prefs.format = 0;         //数字を短縮表示
+			Game.prefs.notifs = 0;         //通知のフェードを早める
+			Game.prefs.animate = 1;        //建物をアニメーション表示
+			Game.prefs.wobbly = 1;         //クッキーをゆらゆらさせる
+			Game.prefs.monospace = 0;      //クッキー用の代替等幅フォント
+			Game.prefs.filters = 1;        //CSSフィルター効果（ブラウザによっては重い）
+			Game.prefs.cookiesound = 1;    //新しいクッキークリック音を使用
+			Game.prefs.crates = 0;         //統計のアイコンにクレートを表示
+			Game.prefs.altDraw = 0;        //描画更新を requestAnimationFrame に変更（従来は固定30fps setTimeout）
+			Game.prefs.showBackupWarning = 1; //true の場合、セーブ読み込み時に「バックアップしましたか？」を表示
+			Game.prefs.extraButtons = 1;   //true の場合、ミュートボタンや建物マスターバーを表示
+			Game.prefs.askLumps = 0;       //true の場合、ラプス使用前に確認プロンプトを表示
+			Game.prefs.customGrandmas = 1; //true の場合、Patreonサポート者名をおばあちゃんに表示
+			Game.prefs.timeout = 0;        //true の場合、タイムアウト時に一時停止画面を表示
+			Game.prefs.cloudSave = 1;      //true の場合、Steamでクラウドセーブ/ロード
+			Game.prefs.bgMusic = 1;        //true の場合、Steam版でゲームが非フォーカス時も音楽を再生
+			Game.prefs.notScary = 0;       //true の場合、怖い要素をやや緩和（「眉毛モード」）
+			Game.prefs.fullscreen = 0;     //true の場合、Steam版はフルスクリーン
+			Game.prefs.screenreader = 0;   //true の場合、スクリーンリーダー用DOMを追加（リロード必要）
+			Game.prefs.discordPresence = 1; //true の場合、Discordステータスにゲームプレイ情報を表示
 
 		}
 		Game.DefaultPrefs();
@@ -4029,7 +4029,7 @@ Game.Launch=function()
 			
 			if (me.bought && context=='store') enabled=0;
 			
-			if (enabled) classes+=' enabled';// else classes+=' disabled';
+			if (enabled) classes+=' enabled';//else classes+=' disabled';
 			if (noFrame) classes+=' noFrame';
 			
 			var text=[];
@@ -7306,7 +7306,7 @@ Game.Launch=function()
 			if (Game.TickerAge<=0) Game.getNewTicker();
 			else if (Game.Ticker=='') Game.getNewTicker(true);
 		}
-		Game.getNewTicker = function(manual) // 注意: "manual" は、ティッカー（ニュース欄）がクリックされた場合に true になるが、起動時などにも true になることがある
+		Game.getNewTicker = function(manual) //注意: "manual" は、ティッカー（ニュース欄）がクリックされた場合に true になるが、起動時などにも true になることがある
 		{
 			var list=[];
 			
@@ -8356,7 +8356,7 @@ Game.Launch=function()
 				if ((Game.buyMode==1 && Game.cookies>=price) || (Game.buyMode==-1 && me.amount>0)) canBuy=true;
 				
 				var synergiesStr='';
-				// 注意: 完全に正確とは限らない。計算（数学的処理）を確認する必要があるかもしれない
+				//注意: 完全に正確とは限らない。計算（数学的処理）を確認する必要があるかもしれない
 				if (me.amount>0)
 				{
 					var synergiesWith={};
@@ -10125,11 +10125,11 @@ Game.Launch=function()
 		}
 		
 		Game.UnlockAt = []; 
-		// これは、クッキー獲得数に応じてアンロックされるアップグレードや実績の配列を格納する。
-		// 配列の各要素は次の形を持つ：
-		// { cookies: (必要なクッキー獲得数), name: (アンロックするアップグレードや実績の名前) }
-		// 必要に応じて、require: (所持している必要があるアップグレードや実績の名前) を追加可能。
-		// 注意: locked:1 が付いているクッキーはリストに追加されない（季節限定クッキーなどに使用）
+		//これは、クッキー獲得数に応じてアンロックされるアップグレードや実績の配列を格納する。
+		//配列の各要素は次の形を持つ：
+		//{ cookies: (必要なクッキー獲得数), name: (アンロックするアップグレードや実績の名前) }
+		//必要に応じて、require: (所持している必要があるアップグレードや実績の名前) を追加可能。
+		//注意: locked:1 が付いているクッキーはリストに追加されない（季節限定クッキーなどに使用）
 		
 		var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 		var getStrCookieProductionMultiplierPlus=function(x)
@@ -10152,9 +10152,9 @@ Game.Launch=function()
 			return upgrade;
 		}
 		
-		// 階層型アップグレードシステム
-		// 各建物にはいくつかのアップグレード階層（ティア）がある
-		// 同じ階層内のすべてのアップグレードは、同じ色、アンロック条件、価格倍率を持つ
+		//階層型アップグレードシステム
+		//各建物にはいくつかのアップグレード階層（ティア）がある
+		//同じ階層内のすべてのアップグレードは、同じ色、アンロック条件、価格倍率を持つ
 		Game.Tiers={
 			1:{name:'Plain',unlock:1,achievUnlock:1,iconRow:0,color:'#ccb3ac',price:					10},
 			2:{name:'Berrylium',unlock:5,achievUnlock:50,iconRow:1,color:'#ff89e7',price:				50},
@@ -10279,10 +10279,10 @@ Game.Launch=function()
 		var pool='';
 		var power=0;
 		
-		// アップグレードを定義する
-		// 注意: 中間に新しいアップグレードを追加しないでください。セーブデータが壊れます。
-		// 追加する場合は必ず最後に！
-		var order = 100; // アイテムのリストに表示される順序を設定するために使われる
+		//アップグレードを定義する
+		//注意: 中間に新しいアップグレードを追加しないでください。セーブデータが壊れます。
+		//追加する場合は必ず最後に！
+		var order = 100; //アイテムのリストに表示される順序を設定するために使われる
 		new Game.Upgrade('Reinforced index finger',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>prod prod</q>',100,[0,0]);Game.MakeTiered(Game.last,1,0);
 		new Game.Upgrade('Carpal tunnel prevention cream',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>it... it hurts to click...</q>',500,[0,1]);Game.MakeTiered(Game.last,2,0);
 		new Game.Upgrade('Ambidextrous',loc("The mouse and cursors are <b>twice</b> as efficient.")+'<q>Look ma, both hands!</q>',10000,[0,2]);Game.MakeTiered(Game.last,3,0);
@@ -11814,7 +11814,7 @@ Game.Launch=function()
 		
 		
 		order=19100;
-		// 注意：これらの価格は、基本価格またはバフなしの1日分のCpSのどちらか高い方までに制限される
+		//注意：これらの価格は、基本価格またはバフなしの1日分のCpSのどちらか高い方までに制限される
 		new Game.Upgrade('Fortune #100',loc("All buildings and upgrades are <b>%1% cheaper</b>.",1)+' '+loc("Cookie production multiplier <b>+%1%</b>.",1)+'<q>True wealth is counted in gifts.</q>',
 		Game.Tiers['fortune'].price*100000,[0,0]);Game.MakeTiered(Game.last,'fortune',10);
 		Game.last.priceFunc=function(me){return Math.min(me.basePrice,Game.unbuffedCps*60*60*24);}
@@ -14113,10 +14113,10 @@ Game.Launch=function()
 		
 		
 		/*=====================================================================================
-		BUFFS
+		バフ
 		=======================================================================================*/
 		
-		Game.buffs={};//buffs currently in effect by name
+		Game.buffs={};// 現在発動中のバフ（名前別）
 		Game.buffsI=0;
 		Game.buffsL=l('buffs');
 		Game.gainBuff=function(type,time,arg1,arg2,arg3)
@@ -14136,23 +14136,23 @@ Game.Launch=function()
 				desc:'',
 				icon:[0,0]
 			};
-			if (Game.buffs[obj.name])//if there is already a buff in effect with this name
+			if (Game.buffs[obj.name])// すでにこの名前のバフが発動中の場合
 			{
-				var buff=Game.buffs[obj.name];
-				if (obj.max) buff.time=Math.max(obj.time,buff.time);//new duration is max of old and new
-				if (obj.add) buff.time+=obj.time;//new duration is old + new
-				if (!obj.max && !obj.add) buff.time=obj.time;//new duration is set to new
+				var buff = Game.buffs[obj.name];// obj.max が true の場合、時間は新旧の最大値に
+				if (obj.max) buff.time = Math.max(obj.time, buff.time); // 新しい時間は古い時間と新しい時間の最大値、obj.add が true の場合、時間を加算
+				if (obj.add) buff.time += obj.time; // 新しい時間は古い時間＋新しい時間、obj.max も obj.add も false の場合、時間を上書き
+				if (!obj.max && !obj.add) buff.time = obj.time; // 新しい時間で上書き
 				buff.maxTime=buff.time;
 			}
-			else//create new buff
+			else//新しいバフを作る
 			{
-				for (var i in obj)//paste parameters onto buff
+				for (var i in obj)// パラメータをバフに適用
 				{buff[i]=obj[i];}
 				buff.maxTime=buff.time;
 				Game.buffs[buff.name]=buff;
 				buff.id=Game.buffsI;
 				
-				//create dom
+				// DOMを作成
 				Game.buffsL.innerHTML=Game.buffsL.innerHTML+'<div id="buff'+buff.id+'" class="crate enabled buff" '+(buff.desc?Game.getTooltip(
 					'<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+buff.desc+'</div>'
 				,'left',true):'')+' style="opacity:1;float:none;display:block;'+writeIcon(buff.icon)+'"></div>';
@@ -14165,9 +14165,9 @@ Game.Launch=function()
 			Game.storeToRefresh=1;
 			return buff;
 		}
-		Game.hasBuff=function(what)//returns 0 if there is no buff in effect with this name; else, returns it
+		Game.hasBuff=function(what)// この名前のバフが発動していなければ0を返す。発動中ならそのバフを返す
 		{if (!Game.buffs[what] || Game.buffs[what].time<=0) return 0; else return Game.buffs[what];}
-		Game.updateBuffs=function()//executed every logic frame
+		Game.updateBuffs=function()// 毎フレームのロジック実行時に呼ばれる
 		{
 			for (var i in Game.buffs)
 			{
@@ -14196,19 +14196,24 @@ Game.Launch=function()
 				}
 			}
 		}
-		Game.killBuff=function(what)//remove a buff by name
-		{if (Game.buffs[what]){Game.buffs[what].time=0;/*Game.buffs[what]=0;*/}}
-		Game.killBuffs=function()//remove all buffs
+		Game.killBuff = function(what) // 名前で指定したバフを削除
+		{ if (Game.buffs[what]) { Game.buffs[what].time = 0; /* Game.buffs[what] = 0; */ } }
+
+		Game.killBuffs = function() // すべてのバフを削除
+		{}
 		{Game.buffsL.innerHTML='';Game.buffs={};Game.recalculateGains=1;Game.storeToRefresh=1;}
 		
 		
-		Game.buffTypes=[];//buff archetypes; only buffs declared from these can be saved and loaded
+		Game.buffTypes=[];// バフのアーキタイプ；これらから宣言されたバフのみセーブ＆ロード可能
 		Game.buffTypesByName=[];
 		Game.buffTypesN=0;
 		Game.buffType=function(name,func)
 		{
 			this.name=name;
-			this.func=func;//this is a function that returns a buff object; it takes a "time" argument in seconds, and 3 more optional arguments at most, which will be saved and loaded as floats
+			this.func = func;
+			// これはバフオブジェクトを返す関数
+			// 引数は「time」（秒）必須と、最大3つまでの任意引数
+			// 任意引数はfloatとしてセーブ/ロードされる
 			this.id=Game.buffTypesN;
 			this.vanilla=Game.vanilla;
 			Game.buffTypesByName[this.name]=this;
@@ -14232,7 +14237,7 @@ Game.Launch=function()
 			multClick:3 - buff multiplies click power by this amount
 		*/
 		
-		//base buffs
+		//ベースのバフ
 		new Game.buffType('frenzy',function(time,pow)
 		{
 			return {
@@ -14379,7 +14384,7 @@ Game.Launch=function()
 				desc:loc("You find %1% more golden cookies for the next %2.",[10,Game.sayTime(time*Game.fps,-1)]),
 				icon:[29,16],
 				time:time*Game.fps,
-				//add:true
+				// 追加: true
 			};
 		});
 		new Game.buffType('haggler luck',function(time,pow)
@@ -14565,21 +14570,21 @@ Game.Launch=function()
 			};
 		});
 		
-		//end of buffs
+		// バフ終了
 		
 		
 		
 		
 		/*=====================================================================================
-		GRANDMAPOCALYPSE
+		ババアポカリプス
 		=======================================================================================*/
 		Game.UpdateGrandmapocalypse=function()
 		{
 			if (Game.Has('Elder Covenant') || Game.Objects['Grandma'].amount==0) Game.elderWrath=0;
-			else if (Game.pledgeT>0)//if the pledge is active, lower it
+			else if (Game.pledgeT>0)// 誓約が有効なら値を下げる
 			{
 				Game.pledgeT--;
-				if (Game.pledgeT==0)//did we reach 0? make the pledge purchasable again
+				if (Game.pledgeT==0)// 0になった？誓約を再度購入可能にする
 				{
 					Game.Lock('Elder Pledge');
 					Game.Unlock('Elder Pledge');
@@ -14594,7 +14599,7 @@ Game.Launch=function()
 				}
 				if (Math.random()<0.001 && Game.elderWrath<Game.Has('One mind')+Game.Has('Communal brainsweep')+Game.Has('Elder Pact'))
 				{
-					Game.elderWrath++;//have we already pledged? make the elder wrath shift between different stages
+					Game.elderWrath++;// すでに誓約済みか？エルダーの怒りを段階的に変化させる
 				}
 				if (Game.Has('Elder Pact') && Game.Upgrades['Elder Pledge'].unlocked==0)
 				{
@@ -14602,7 +14607,7 @@ Game.Launch=function()
 					Game.Unlock('Elder Pledge');
 				}
 			}
-			Game.elderWrathD+=((Game.elderWrath+1)-Game.elderWrathD)*0.001;//slowly fade to the target wrath state
+			Game.elderWrathD+=((Game.elderWrath+1)-Game.elderWrathD)*0.001;//目標値まで怒り状態へ徐々にフェード
 			
 			if (Game.elderWrath!=Game.elderWrathOld)
 			{
@@ -14619,12 +14624,13 @@ Game.Launch=function()
 			Game.UpdateWrinklers();
 		}
 		
-		//wrinklers
+		//シワシワ虫たち
 		
 		function inRect(x,y,rect)
 		{
-			//find out if the point x,y is in the rotated rectangle rect{w,h,r,o} (width,height,rotation in radians,y-origin) (needs to be normalized)
-			//I found this somewhere online I guess
+			// 点(x, y)が回転した長方形 rect{w, h, r, o}（幅、高さ、回転角[ラジアン]、y原点）の内部にあるか判定する
+			// （座標は正規化されている必要あり）
+			// これ、たぶんネットで見つけたやつ
 			var dx = x+Math.sin(-rect.r)*(-(rect.h/2-rect.o)),dy=y+Math.cos(-rect.r)*(-(rect.h/2-rect.o));
 			var h1 = Math.sqrt(dx*dx + dy*dy);
 			var currA = Math.atan2(dy,dx);
@@ -14636,7 +14642,7 @@ Game.Launch=function()
 		}
 		
 		Game.wrinklerHP=2.1;
-		Game.wrinklerLimit=14;//hard limit regardless of boosts
+		Game.wrinklerLimit=14;// ブーストに関係なく絶対上限
 		Game.wrinklers=[];
 		for (var i=0;i<Game.wrinklerLimit;i++)
 		{
@@ -14695,7 +14701,7 @@ Game.Launch=function()
 			me.hp=Game.wrinklerHP;
 			me.type=0;
 			me.clicks=0;
-			if (Math.random()<0.0001) me.type=1;//shiny wrinkler
+			if (Math.random()<0.0001) me.type=1;//光るシワシワ虫
 			return me;
 		}
 		Game.PopRandomWrinkler=function()
@@ -14746,7 +14752,7 @@ Game.Launch=function()
 						else if (godLvl==3) chance*=1.5;
 					}
 					if (Game.Has('Wrinkler doormat')) chance=0.1;
-					if (Math.random()<chance)//respawn
+					if (Math.random()<chance)// 再スポーン
 					{
 						Game.SpawnWrinkler(me);
 					}
@@ -14765,7 +14771,7 @@ Game.Launch=function()
 				}
 				if (me.phase==2)
 				{
-					me.sucked+=(((Game.cookiesPs/Game.fps)*Game.cpsSucked));//suck the cookies
+					me.sucked+=(((Game.cookiesPs/Game.fps)*Game.cpsSucked));// クッキーを吸い込む
 				}
 				if (me.phase>0)
 				{
@@ -14795,7 +14801,11 @@ Game.Launch=function()
 						//me.close*=0.99;
 						if (Game.Click && Game.lastClickedEl==l('backgroundLeftCanvas'))
 						{
-							if (Game.keys[17] && Game.sesame) {me.type=!me.type;PlaySound('snd/shimmerClick.mp3');}//ctrl-click on a wrinkler in god mode to toggle its shininess
+							if (Game.keys[17] && Game.sesame) {
+								me.type = !me.type;
+								PlaySound('snd/shimmerClick.mp3');
+							}
+							// 開発者モードでシワシワ虫をCtrlクリックすると、光っているかどうかを切り替え
 							else
 							{
 								Game.playWrinklerSquishSound();
@@ -14843,8 +14853,10 @@ Game.Launch=function()
 					var toSuck=1.1;
 					if (Game.Has('Sacrilegious corruption')) toSuck*=1.05;
 					toSuck*=1+Game.auraMult('Dragon Guts')*0.2;
-					if (me.type==1) toSuck*=3;//shiny wrinklers are an elusive, profitable breed
-					me.sucked*=toSuck;//cookie dough does weird things inside wrinkler digestive tracts
+					if (me.type == 1) toSuck *= 3; 
+					// 光るシワシワ虫は希少で儲かる種類
+					me.sucked *= toSuck; 
+					// クッキー生地はシワシワ虫の消化管内で不思議な挙動をする
 					if (Game.Has('Wrinklerspawn')) me.sucked*=1.05;
 					if (Game.hasGod)
 					{
@@ -14879,7 +14891,7 @@ Game.Launch=function()
 							}
 							if (me.type==1) failRate*=0.9;
 							failRate=Math.pow(failRate,Game.dropRateMult());
-							if (Math.random()>failRate)//halloween cookie drops
+							if (Math.random()>failRate)//ハロウィーンクッキードロップ
 							{
 								var cookie=choose(['Skull cookies','Ghost cookies','Bat cookies','Slime cookies','Pumpkin cookies','Eyeball cookies','Spider cookies']);
 								if (!Game.HasUnlocked(cookie) && !Game.Has(cookie))
@@ -15067,7 +15079,7 @@ Game.Launch=function()
 		}
 		
 		/*=====================================================================================
-		SPECIAL THINGS AND STUFF
+		特別なもの
 		=======================================================================================*/
 		
 		
@@ -15397,7 +15409,7 @@ Game.Launch=function()
 						,'top')+
 						'></div>';
 					}
-					if (Game.dragonLevel>=27)//2nd aura slot; increased with last building
+					if (Game.dragonLevel>=27)// 2番目のオーラスロット；最後の建物で増加
 					{
 						var icon=Game.dragonAuras[Game.dragonAura2].pic;
 						str+='<div class="crate enabled" style="opacity:1;position:absolute;right:80px;top:-58px;'+writeIcon(icon)+'" '+Game.clickStr+'="PlaySound(\'snd/tick.mp3\');Game.SelectDragonAura(1);" '+Game.getTooltip(
@@ -15486,7 +15498,7 @@ Game.Launch=function()
 		}
 		
 		/*=====================================================================================
-		VISUAL EFFECTS
+		ビジュアルエフェクト
 		=======================================================================================*/
 		
 		Game.AllMilks=[
@@ -15529,12 +15541,12 @@ Game.Launch=function()
 		
 		Game.MakeMilk=function()
 		{
-			//a system to build milk assets procedurally
-			//middle color is base; first color is multiplied; third color is screened
-			//special effects are added as image overlays
-			var cols=['#6D84DA','#D8BFA9','#E6E9C3'];//plain milk
-			var cols=['#FF4C0E','#553626','#C0784A'];//chocolate milk
-			var cols=['#810600','#D61643','#C63324'];//cherry milk
+			// ミルク用アセットを手続き的に生成するシステム
+			// 中央の色がベース、1番目の色は乗算、3番目の色はスクリーン合成
+			// 特殊効果は画像オーバーレイとして追加
+			var cols=['#6D84DA','#D8BFA9','#E6E9C3']; // プレーンミルク
+			var cols=['#FF4C0E','#553626','#C0784A']; // チョコレートミルク
+			var cols=['#810600','#D61643','#C63324']; // チェリーミルク
 			var bubbles=false;
 			
 			var pics=['milkMask.png','milkDarkMask.jpg','milkCol1Mask.jpg','milkCol2Mask.jpg'];
@@ -15551,11 +15563,11 @@ Game.Launch=function()
 				c2.height=h;
 				var ctx2=c2.getContext('2d');
 				
-				//base
+				//ベース
 				ctx.fillStyle=cols[1];
 				ctx.fillRect(0,0,w,h);
 				ctx2.drawImage(Pic('milkCol1Mask.jpg'),0,0);
-					//fx
+					//エフェクト
 					if (bubbles)
 					{
 						ctx2.globalCompositeOperation='hard-light';
@@ -15566,10 +15578,10 @@ Game.Launch=function()
 				ctx2.fillRect(0,0,w,h);
 				ctx.globalCompositeOperation='multiply';
 				ctx.drawImage(c2,0,0);
-				//highlight
+				// ハイライト
 				ctx2.globalCompositeOperation='source-over';
 				ctx2.drawImage(Pic('milkCol2Mask.jpg'),0,0);
-					//fx
+					//エフェクト
 					if (bubbles)
 					{
 						ctx2.globalCompositeOperation='hard-light';
@@ -15580,24 +15592,24 @@ Game.Launch=function()
 				ctx2.fillRect(0,0,w,h);
 				ctx.globalCompositeOperation='screen';
 				ctx.drawImage(c2,0,0);
-				//dark gradient
+				// ダークグラデーション
 				ctx.globalCompositeOperation='multiply';
 				ctx.drawImage(Pic('milkDarkMask.jpg'),0,0);
 				
-				//fx
+				// エフェクト
 				if (bubbles)
 				{
 					ctx.globalCompositeOperation='overlay';
 					ctx.drawImage(Pic('milkFXbubbles.jpg'),0,0);
 				}
 				
-				//clip alpha
+				// 透明度を制限
 				ctx.globalCompositeOperation='destination-in';
 				ctx.drawImage(Pic('milkMask.png'),0,0);
 				c.style.cssText='position:absolute;left:0px;top:0px;border:4px solid #999;z-index:1000000;';
 				document.body.appendChild(c);
 				
-				//testing
+				//テスト用
 				Game.Loader.assetsLoaded['milkHazelnut.png']=c;
 				Game.Loader.assets['milkHazelnut.png']=c;
 			});
@@ -15618,15 +15630,15 @@ Game.Launch=function()
 		}
 		Game.Milk=Game.Milks[0];
 		
-		Game.mousePointer=0;//when 1, draw the mouse as a pointer on the left screen
+		Game.mousePointer=0;// 1のとき、左画面にマウスをポインターとして表示
 		
 		Game.cookieOriginX=0;
 		Game.cookieOriginY=0;
 		Game.DrawBackground=function()
 		{
 			Timer.clean();
-			//background
-			if (!Game.Background)//init some stuff
+			//背景
+			if (!Game.Background)// いくつかの初期化処理
 			{
 				Game.Background=l('backgroundCanvas').getContext('2d');
 				Game.Background.canvas.width=Game.Background.canvas.parentNode.offsetWidth;
@@ -15634,7 +15646,7 @@ Game.Launch=function()
 				Game.LeftBackground=l('backgroundLeftCanvas').getContext('2d');
 				Game.LeftBackground.canvas.width=Game.LeftBackground.canvas.parentNode.offsetWidth;
 				Game.LeftBackground.canvas.height=Game.LeftBackground.canvas.parentNode.offsetHeight;
-					//preload ascend animation bits so they show up instantly
+					//転生時アニメーションのパーツを先に読み込んで即表示
 					Game.LeftBackground.globalAlpha=0;
 					Game.LeftBackground.drawImage(Pic('brokenCookie.png'),0,0);
 					Game.LeftBackground.drawImage(Pic('brokenCookieHalo.png'),0,0);
@@ -15653,7 +15665,7 @@ Game.Launch=function()
 			if (Game.OnAscend)
 			{
 				Timer.clean();
-				//starry background on ascend screen
+				//転生の星空背景
 				var w=Game.Background.canvas.width;
 				var h=Game.Background.canvas.height;
 				var b=Game.ascendl.getBounds();
@@ -15665,7 +15677,7 @@ Game.Launch=function()
 				Timer.track('star layer 1');
 				if (Game.prefs.fancy)
 				{
-					//additional star layer
+					//追加の星レイヤー
 					Game.Background.globalAlpha=0.5*(0.5+Math.sin(Game.realT*0.02)*0.3);
 					var s=2*Game.AscendZoom*(1+Math.sin(Game.realT*0.002)*0.07);
 					//Game.Background.globalCompositeOperation='lighter';
@@ -15736,7 +15748,7 @@ Game.Launch=function()
 							Game.bg='grandmas1';
 							Game.bgFade='grandmas2';
 						}
-						else if (Game.elderWrathD>=3)// && Game.elderWrathD<4)
+						else if (Game.elderWrathD>=3)//&& Game.elderWrathD<4)
 						{
 							Game.bgR=(Game.elderWrathD-3)/1;
 							Game.bg='grandmas2';
@@ -15763,7 +15775,7 @@ Game.Launch=function()
 				}
 				Timer.track('window background');
 				
-				//clear
+				//クリア
 				ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 				/*if (Game.AscendTimer<Game.AscendBreakpoint) ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 				else
@@ -15787,7 +15799,7 @@ Game.Launch=function()
 				{
 					if (Game.prefs.particles)
 					{
-						//falling cookies
+						//落ちてくるクッキー
 						var pic='';
 						var opacity=1;
 						if (Game.elderWrathD<=1.5 || Game.prefs.notScary)
@@ -15805,7 +15817,7 @@ Game.Launch=function()
 							ctx.fillPattern(Pic(pic),0,0,ctx.canvas.width,ctx.canvas.height+512,512,512,0,y);
 							ctx.globalAlpha=1;
 						}
-						//snow
+						//雪
 						if (Game.season=='christmas')
 						{
 							var y=(Math.floor(Game.realT*2.5)%512);
@@ -15815,7 +15827,7 @@ Game.Launch=function()
 							ctx.globalCompositeOperation='source-over';
 							ctx.globalAlpha=1;
 						}
-						//hearts
+						//ハート
 						if (Game.season=='valentines')
 						{
 							var y=(Math.floor(Game.realT*2.5)%512);
@@ -15829,7 +15841,7 @@ Game.Launch=function()
 						ctx.globalAlpha=1;
 						Timer.track('particles');
 						
-						//big cookie shine
+						//大クッキーの光エフェクト
 						var s=512;
 						
 						var x=Game.cookieOriginX;
@@ -15872,14 +15884,14 @@ Game.Launch=function()
 						
 						if (showDragon)
 						{
-							//big dragon
+							//大きいドラゴン
 							var s=300*2*(1+Math.sin(Game.realT*0.013)*0.1);
 							var x=Game.cookieOriginX-s/2;
 							var y=Game.cookieOriginY-s/(1.4+0.2*Math.sin(Game.realT*0.01));
 							ctx.drawImage(Pic('dragonBG2.png'),x,y,s,s);
 						}
 						
-						//big cookie
+						//大クッキー
 						ctx.globalAlpha=1;
 						var s=256*Game.BigCookieSize;
 						var x=Game.cookieOriginX;
@@ -15912,9 +15924,9 @@ Game.Launch=function()
 						ctx.restore();
 						Timer.track('big cookie');
 					}
-					else//no particles
+					else//エフェクトなし
 					{
-						//big cookie shine
+						//大クッキーの光りエフェクト
 						var s=512;
 						var x=Game.cookieOriginX-s/2;
 						var y=Game.cookieOriginY-s/2;
@@ -15923,14 +15935,14 @@ Game.Launch=function()
 						
 						if (showDragon)
 						{
-							//big dragon
+							//大きいドラゴン
 							var s=300*2*(1+Math.sin(Game.realT*0.013)*0.1);
 							var x=Game.cookieOriginX-s/2;
 							var y=Game.cookieOriginY-s/(1.4+0.2*Math.sin(Game.realT*0.01));
 							ctx.drawImage(Pic('dragonBG2.png'),x,y,s,s);
 						}
 					
-						//big cookie
+						//大クッキー
 						ctx.globalAlpha=1;
 						var s=256*Game.BigCookieSize;
 						var x=Game.cookieOriginX-s/2;
@@ -15939,7 +15951,7 @@ Game.Launch=function()
 						ctx.drawImage(Pic('perfectCookie.png'),x,y,s,s);
 					}
 					
-					//cursors
+					//カーソル
 					if (Game.prefs.cursors)
 					{
 						ctx.save();
@@ -15979,7 +15991,7 @@ Game.Launch=function()
 				else
 				{
 					var tBase=Math.max(0,(Game.AscendTimer-Game.AscendBreakpoint)/(Game.AscendDuration-Game.AscendBreakpoint));
-					//big crumbling cookie
+					//大きく崩れるクッキー
 					//var t=(3*Math.pow(tBase,2)-2*Math.pow(tBase,3));//S curve
 					var t=Math.pow(tBase,0.5);
 					
@@ -16048,7 +16060,7 @@ Game.Launch=function()
 					
 					ctx.restore();
 					
-					//flares
+					//フレア
 					var n=9;
 					var t=Game.AscendTimer/Game.AscendBreakpoint;
 					if (Game.AscendTimer<Game.AscendBreakpoint)
@@ -16071,7 +16083,7 @@ Game.Launch=function()
 					}
 					
 					
-					//flash at breakpoint
+					//ブレークポイントで点滅
 					if (tBase<0.1 && tBase>0)
 					{
 						ctx.globalAlpha=1-tBase/0.1;
@@ -16088,7 +16100,7 @@ Game.Launch=function()
 					}
 				}
 				
-				//milk and milk accessories
+				//ミルクとミルクアクセサリー
 				if (Game.prefs.milk)
 				{
 					var width=ctx.canvas.width;
@@ -16109,7 +16121,7 @@ Game.Launch=function()
 					
 					if (Game.TOYS)
 					{
-						//golly
+						//おっと
 						if (!Game.Toy)
 						{
 							Game.toys=[];
@@ -16165,7 +16177,7 @@ Game.Launch=function()
 						for (var i in Game.toys)
 						{
 							var me=Game.toys[i];
-							//psst... not real physics
+							//こっそり…本物の物理じゃないよ
 							for (var ii in Game.toys)
 							{
 								var it=Game.toys[ii];
@@ -16264,7 +16276,7 @@ Game.Launch=function()
 				{
 					Game.DrawWrinklers();Timer.track('wrinklers');
 					
-					//shimmering veil
+					//きらめくヴェール
 					if (Game.Has('Shimmering veil [off]'))
 					{
 						ctx.globalAlpha=1;
@@ -16277,7 +16289,7 @@ Game.Launch=function()
 						ctx.rotate(-Game.realT*0.01);
 						ctx.drawImage(Pic('shimmeringVeil.png'),-s/2,-s/2,s,s);
 						ctx.restore();
-						if (Game.prefs.particles)//sparkles
+						if (Game.prefs.particles)//きらめきエフェクト
 						{
 							for (i=0;i<6;i++)
 							{
@@ -16297,7 +16309,7 @@ Game.Launch=function()
 					
 					Game.particlesDraw(2);Timer.track('text particles');
 					
-					//shiny border during frenzies etc
+					//フレンジー時などの光る枠
 					ctx.globalAlpha=1;
 					var borders='shadedBordersSoft.png';
 					if (goodBuff) borders='shadedBordersGold.png';
@@ -16311,12 +16323,12 @@ Game.Launch=function()
 		
 		
 		/*=====================================================================================
-		INITIALIZATION END; GAME READY TO LAUNCH
+		初期化終了、ゲーム起動準備完了！
 		=======================================================================================*/
 		
 		Game.killShimmers();
 		
-		//booooo
+		//バーーーーー！
 		Game.RuinTheFun=function(silent)
 		{
 			Game.popups=0;
@@ -16500,7 +16512,8 @@ Game.Launch=function()
 			Game.OpenSesame();
 		}
 		
-		//experimental debugging function that cycles through every owned upgrade, turns it off and on, and lists how much each upgrade is participating to CpS
+		//実験的デバッグ関数：所持している全アップグレードを順番にオン／オフして
+		//各アップグレードがCpSにどれだけ寄与しているかを一覧表示
 		Game.debuggedUpgradeCpS=[];
 		Game.debuggedUpgradeCpClick=[];
 		Game.debugColors=['#322','#411','#600','#900','#f30','#f90','#ff0','#9f0','#0f9','#09f','#90f'];
@@ -16527,18 +16540,18 @@ Game.Launch=function()
 			Game.CalculateGains();
 		}
 		
-		Game.vanilla=0;//everything we create beyond this will be saved in mod structures
+		Game.vanilla=0;//ここから作成するものはすべてMOD用の構造体に保存される
 		
 		Game.launchMods();
 		
-		Game.runModHook('create');//declare custom upgrades/achievs/buffs/buildings here!
+		Game.runModHook('create');//カスタムのアップグレード・実績・バフ・建物をここで宣言！
 		
 		BeautifyAll();
 		
 		if (!App)
 		{
 			if (!Game.LoadSave())
-			{//try to load the save when we open the page. if this fails, try to brute-force it half a second later
+			{//ページを開いたときにセーブデータを読み込もうとする。失敗した場合は0.5秒後に再試行
 				setTimeout(function(){
 					var local=localStorageGet(Game.SaveTo);
 					Game.LoadSave(local);
@@ -16591,7 +16604,8 @@ Game.Launch=function()
 		
 		if (!App && Game.local && new URL(window.location.href).searchParams.get('addon'))
 		{
-			//load addon at path defined in url - only if game is run locally; used mostly for development
+			//URLで指定されたパスのアドオンを読み込む — ゲームをローカルで実行している場合のみ
+			//主に開発用
 			var path=new URL(window.location.href).searchParams.get('addon');
 			console.log('Loading addon at path:',path);
 			var script=document.createElement('script');
@@ -16600,7 +16614,7 @@ Game.Launch=function()
 		}
 	}
 	/*=====================================================================================
-	LOGIC
+	ロジック
 	=======================================================================================*/
 	Game.Logic=function()
 	{
@@ -16615,11 +16629,11 @@ Game.Launch=function()
 			Game.UpdateSpecial();
 			Game.UpdateGrandmapocalypse();
 			
-			//these are kinda fun
+			//これはちょっと面白い
 			//if (Game.BigCookieState==2 && !Game.promptOn && Game.Scroll!=0) Game.ClickCookie();
 			//if (Game.BigCookieState==1 && !Game.promptOn) Game.ClickCookie();
 			
-			//handle graphic stuff
+			//グラフィック関連の処理
 			if (Game.prefs.wobbly)
 			{
 				if (Game.BigCookieState==1) Game.BigCookieSizeT=0.98;
@@ -16642,7 +16656,7 @@ Game.Launch=function()
 			else l('sectionLeft').style.cursor='auto';
 			Game.mousePointer=0;
 			
-			//handle milk and milk accessories
+			//ミルクとミルクアクセサリーを処理する
 			Game.milkProgress=Game.AchievementsOwned/25;
 			if (Game.milkProgress>=0.5) Game.Unlock('Kitten helpers');
 			if (Game.milkProgress>=1) Game.Unlock('Kitten workers');
@@ -16666,7 +16680,7 @@ Game.Launch=function()
 			
 			if (Game.autoclickerDetected>0) Game.autoclickerDetected--;
 			
-			//handle research
+			//アポカリプス研究の管理
 			if (Game.researchT>0)
 			{
 				Game.researchT--;
@@ -16682,7 +16696,7 @@ Game.Launch=function()
 				Game.researchT=-1;
 				Game.recalculateGains=1;
 			}
-			//handle seasons
+			//季節の管理
 			if (Game.seasonT>0)
 			{
 				Game.seasonT--;
@@ -16695,7 +16709,7 @@ Game.Launch=function()
 				Game.seasonT=-1;
 			}
 			
-			//press ctrl to bulk-buy 10, shift to bulk-buy 100
+			//Ctrlで10個まとめて購入、Shiftで100個まとめて購入
 			if (!Game.promptOn)
 			{
 				if ((Game.keys[16] || Game.keys[17]) && !Game.buyBulkShortcut)
@@ -16707,21 +16721,21 @@ Game.Launch=function()
 					Game.storeBulkButton(-1);
 				}
 			}
-			if ((!Game.keys[16] && !Game.keys[17]) && Game.buyBulkShortcut)//release
+			if ((!Game.keys[16] && !Game.keys[17]) && Game.buyBulkShortcut)//ショートカット解除
 			{
 				Game.buyBulk=Game.buyBulkOld;
 				Game.buyBulkShortcut=0;
 				Game.storeBulkButton(-1);
 			}
 			
-			//handle cookies
+			//クッキーの管理
 			if (Game.recalculateGains) Game.CalculateGains();
-			Game.Earn(Game.cookiesPs/Game.fps);//add cookies per second
+			Game.Earn(Game.cookiesPs/Game.fps);//CPS(cookies per second)を追加
 			
-			//grow lumps
+			//角砂糖
 			Game.doLumps();
 			
-			//minigames
+			//ミニゲーム
 			for (var i in Game.Objects)
 			{
 				var me=Game.Objects[i];
@@ -16730,12 +16744,12 @@ Game.Launch=function()
 			
 			if (Game.specialTab!='' && Game.T%(Game.fps*3)==0) Game.ToggleSpecialMenu(1);
 			
-			//wrinklers
+			//シワシワ虫
 			if (Game.cpsSucked>0)
 			{
 				Game.Dissolve((Game.cookiesPs/Game.fps)*Game.cpsSucked);
 				Game.cookiesSucked+=((Game.cookiesPs/Game.fps)*Game.cpsSucked);
-				//should be using one of the following, but I'm not sure what I'm using this stat for anymore
+				//本来は下のどれかを使うべきだが、このステータスが今何に使われているのかはもうよく分からない
 				//Game.cookiesSucked=Game.wrinklers.reduce(function(s,w){return s+w.sucked;},0);
 				//for (var i in Game.wrinklers) {Game.cookiesSucked+=Game.wrinklers[i].sucked;}
 			}
@@ -16755,8 +16769,8 @@ Game.Launch=function()
 			/*=====================================================================================
 			UNLOCKING STUFF
 			=======================================================================================*/
-			if (Game.T%(Game.fps)==0 && Math.random()<1/1000000) Game.Win('Just plain lucky');// 毎秒 100万分の1 の確率で達成される実績
-			if (Game.T%(Game.fps*5)==0 && Game.ObjectsById.length>0)// いくつかの実績やアップグレードをチェックする
+			if (Game.T%(Game.fps)==0 && Math.random()<1/1000000) Game.Win('Just plain lucky');//毎秒 100万分の1 の確率で達成される実績
+			if (Game.T%(Game.fps*5)==0 && Game.ObjectsById.length>0)//いくつかの実績やアップグレードをチェックする
 			{
 				if (isNaN(Game.cookies)) {Game.cookies=0;Game.cookiesEarned=0;Game.recalculateGains=1;}
 				
@@ -16765,7 +16779,7 @@ Game.Launch=function()
 				
 				if (!Game.fullDate || (Date.now()-Game.fullDate)>=365*24*60*60*1000) Game.Win('So much to do so much to see');
 				
-				if (Game.cookiesEarned>=1000000 && (Game.ascensionMode==1 || Game.resets==0))// チャレンジモード中、またはまだ転生していない
+				if (Game.cookiesEarned>=1000000 && (Game.ascensionMode==1 || Game.resets==0))//チャレンジモード中、またはまだ転生していない
 				{
 					if (timePlayed<=1000*60*35) Game.Win('Speed baking I');
 					if (timePlayed<=1000*60*25) Game.Win('Speed baking II');
@@ -16981,7 +16995,7 @@ Game.Launch=function()
 		}
 		if (Game.T%15==0)
 		{
-			//written through the magic of "hope for the best" maths
+			//「なるようになる」数学の魔法で書かれた
 			var chipsOwned=Game.HowMuchPrestige(Game.cookiesReset);
 			var ascendNowToOwn=Math.floor(Game.HowMuchPrestige(Game.cookiesReset+Game.cookiesEarned));
 			var ascendNowToGet=ascendNowToOwn-Math.floor(chipsOwned);
@@ -16989,7 +17003,7 @@ Game.Launch=function()
 			var cookiesToNext=Game.HowManyCookiesReset(ascendNowToOwn+1)-(Game.cookiesEarned+Game.cookiesReset);
 			var percent=1-(cookiesToNext/nextChipAt);
 			
-		// レガシータブの下のツールチップを埋める
+		//レガシータブの下のツールチップを埋める
 			var date=new Date();
 			date.setTime(Date.now()-Game.startDate);
 			var timeInSeconds=date.getTime()/1000;
@@ -17009,14 +17023,14 @@ Game.Launch=function()
 			else str+=loc("Ascending now would grant you<br><b>%1 prestige levels</b> (+%2% CpS)<br>and <b>%3 heavenly chips</b> to spend.",[Beautify(ascendNowToGet),Beautify(ascendNowToGet),Beautify(ascendNowToGet)]);
 			if (cookiesToNext>=0)
 			{
-				// 注意: 高いHC（ヒーリングクッキー/ヘブンリーチープス）量の場合、精度の問題で cookiesToNext（次のクッキーまでの数）が負の値になることがあります。
-				// このような場合は単純に非表示にします。通常、差が小さくすぐに埋まってしまうためです。
+				//注意: 高いHC（ヒーリングクッキー/ヘブンリーチープス）量の場合、精度の問題で cookiesToNext（次のクッキーまでの数）が負の値になることがあります。
+				//このような場合は単純に非表示にします。通常、差が小さくすぐに埋まってしまうためです。
 				str+='<div class="line"></div>';
 				str+=loc("You need <b>%1 more cookies</b> for the next level.",Beautify(cookiesToNext))+'<br>';
 			}
 			l('ascendTooltip').innerHTML=str;
 			
-			if (ascendNowToGet>0)// 今リセットしたら何枚チップがもらえるかを数字で表示する
+			if (ascendNowToGet>0)//今リセットしたら何枚チップがもらえるかを数字で表示する
 			{
 				Game.ascendNumber.textContent='+'+SimpleBeautify(ascendNowToGet);
 				Game.ascendNumber.style.display='block';
@@ -17028,12 +17042,12 @@ Game.Launch=function()
 			
 			if (ascendNowToGet>Game.ascendMeterLevel || Game.ascendMeterPercentT<Game.ascendMeterPercent)
 			{
-				//reset the gauge and play a sound if we gained a potential level
+				//転生レベルを獲得したらゲージをリセットして音を鳴らす
 				Game.ascendMeterPercent=0;
 				//PlaySound('snd/levelPrestige.mp3');//a bit too annoying
 			}
 			Game.ascendMeterLevel=ascendNowToGet;
-			Game.ascendMeterPercentT=percent;//gauge that fills up as you near your next chip
+			Game.ascendMeterPercentT=percent;//次のチップに近づくと溜まるゲージ
 			//if (Game.ascendMeterPercentT<Game.ascendMeterPercent) {Game.ascendMeterPercent=0;PlaySound('snd/levelPrestige.mp3',0.5);}
 			//if (percent>=1) {Game.ascendMeter.className='';} else Game.ascendMeter.className='filling';
 		}
@@ -17067,7 +17081,7 @@ Game.Launch=function()
 		
 		if ((Game.toSave || (Game.T%(Game.fps*60)==0 && Game.T>Game.fps*10 && Game.prefs.autosave)) && !Game.OnAscend)
 		{
-			//check if we can save: no minigames are loading
+			//セーブ可能か確認：ミニゲームが読み込まれていないか
 			var canSave=true;
 			for (var i in Game.Objects)
 			{
@@ -17084,7 +17098,7 @@ Game.Launch=function()
 		
 		if (App && App.logic) App.logic(Game.T);
 		
-		//every half-hour: get server data (ie. update notification)
+		//30分ごと：サーバーデータを取得（通知の更新など）
 		if (Game.T%(Game.fps*60*30)==0 && Game.T>Game.fps*10/* && Game.prefs.autoupdate*/) {Game.CheckUpdates();}
 		
 		Game.T++;
@@ -17092,7 +17106,7 @@ Game.Launch=function()
 	}
 	
 	/*=====================================================================================
-	DRAW
+	描画
 	=======================================================================================*/
 	
 	Game.Draw=function()
@@ -17143,7 +17157,7 @@ Game.Launch=function()
 				{
 					var me=Game.ObjectsById[i];
 					
-					//make products full-opacity if we can buy them
+					//購入可能な商品は不透明にする
 					var classes='product';
 					var price=me.bulkPrice;
 					if (Game.cookiesEarned>=me.basePrice || me.bought>0) {classes+=' unlocked';lastLocked=0;me.locked=0;if (me.id==19){Game.Win('Cookie Clicker');}} else {classes+=' locked';lastLocked++;me.locked=1;}
@@ -17153,7 +17167,7 @@ Game.Launch=function()
 					//if (me.id>0) {l('productName'+me.id).innerHTML=Beautify(me.storedTotalCps/Game.ObjectsById[me.id-1].storedTotalCps,2);}
 				}
 				
-				//make upgrades full-opacity if we can buy them
+				//購入可能なアップグレードは不透明にする
 				var lastPrice=0;
 				for (var i=0;i<Game.UpgradesInStore.length;i++)
 				{
@@ -17166,7 +17180,8 @@ Game.Launch=function()
 						if ((canBuy && !enabled) || (!canBuy && enabled)) Game.upgradesToRebuild=1;
 						if (me.pool!='toggle')
 						{
-							if (price<lastPrice) Game.upgradesToRebuild=1;//is this upgrade less expensive than the previous one? trigger a refresh to sort it again
+							if (price < lastPrice) Game.upgradesToRebuild = 1;
+							//このアップグレードが前のより安い？ → 並び替えのためリフレッシュをトリガー
 							lastPrice=price;
 						}
 					}
@@ -17186,7 +17201,7 @@ Game.Launch=function()
 			}
 			Timer.track('store');
 			
-			if (Game.PARTY)//i was bored and felt like messing with CSS
+			if (Game.PARTY)//暇だったので CSS をいじってみた
 			{
 				var pulse=Math.pow((Game.realT%10)/10,0.5);
 				Game.l.style.filter='hue-rotate('+((Game.realT*5)%360)+'deg) brightness('+(150-50*pulse)+'%)';
@@ -17211,16 +17226,16 @@ Game.Launch=function()
 	}
 	
 	/*=====================================================================================
-	MAIN LOOP
+    メインループ
 	=======================================================================================*/
 	Game.Loop=function()
 	{
 		if (Game.timedout) return false;
-		var startTime=Date.now();//adapted from a mod called FPSTweaker
+		var startTime=Date.now();//FPSTweaker という MOD から改変
 		Timer.say('START');
 		Timer.track('browser stuff');
 		Timer.say('LOGIC');
-		//update game logic !
+		//ゲームロジックを更新！
 		Game.catchupLogic=0;
 		Game.Logic();
 		Game.catchupLogic=1;
@@ -17228,23 +17243,29 @@ Game.Launch=function()
 		var time=Date.now();
 		
 		
-		//latency compensator
-		Game.accumulatedDelay+=((time-Game.time)-1000/Game.fps);
-		if (Game.prefs.timeout && time-Game.lastActivity>=1000*60*5 && !Game.OnAscend)
+		//レイテンシ補正
+		Game.accumulatedDelay += ((time - Game.time) - 1000 / Game.fps);
+		if (Game.prefs.timeout && time - Game.lastActivity >= 1000 * 60 * 5 && !Game.OnAscend)
 		{
-			if (Game.accumulatedDelay>1000*60*30) Game.delayTimeouts+=3;//more than 30 minutes delay? computer probably asleep and not making cookies anyway
-			else if (Game.accumulatedDelay>1000*5) Game.delayTimeouts++;//add to timeout counter when we skip 10 seconds worth of frames (and the player has been inactive for at least 5 minutes)
-			if (Game.delayTimeouts>=3) Game.Timeout();//trigger timeout when the timeout counter is 3+
+			if (Game.accumulatedDelay > 1000 * 60 * 30) Game.delayTimeouts += 3;
+			//30分以上の遅延：PCがスリープしていて、そもそも動いていない可能性が高い
+			else if (Game.accumulatedDelay > 1000 * 5) Game.delayTimeouts++;
+			//5秒以上の遅延（＝大量のフレームをスキップ）時にタイムアウトカウンタを加算
+			if (Game.delayTimeouts >= 3) Game.Timeout();
+			//タイムアウトカウンタが3以上になったらタイムアウト発動
 		}
 		
-		Game.accumulatedDelay=Math.min(Game.accumulatedDelay,1000*5);//don't compensate over 5 seconds; if you do, something's probably very wrong
+		Game.accumulatedDelay = Math.min(Game.accumulatedDelay, 1000 * 5);
+		//5秒以上は補正しない（ここまで来たら何かがおかしい可能性が高い）
 		Game.time=time;
 		
 		//if (Game.accumulatedDelay>=Game.fps) console.log('delay:',Math.round(Game.accumulatedDelay/Game.fps));
 		while (Game.accumulatedDelay>0)
 		{
 			Game.Logic();
-			Game.accumulatedDelay-=1000/Game.fps;//as long as we're detecting latency (slower than target fps), execute logic (this makes drawing slower but makes the logic behave closer to correct target fps)
+		Game.accumulatedDelay -= 1000 / Game.fps; 
+		//目標FPSより遅れている（レイテンシを検出している）間はロジックを実行する
+		//描画は遅くなるが、ロジックの動作を目標FPSに近づけるため
 		}
 		Game.catchupLogic=0;
 		Timer.track('logic');
@@ -17266,7 +17287,7 @@ Game.Launch=function()
 		
 		if (Game.sesame)
 		{
-			//fps counter and graph
+			//FPSカウンターとグラフ
 			Game.previousFps=Game.currentFps;
 			Game.currentFps=Game.getFps();
 				var ctx=Game.fpsGraphCtx;
@@ -17296,7 +17317,7 @@ Game.Launch=function()
 }
 
 /*=====================================================================================
-LAUNCH THIS THING
+実行
 =======================================================================================*/
 //Game.Launch();
 
@@ -17322,7 +17343,7 @@ window.onload=function()
 				function(next){
 					locStringsFallback=locStrings;
 					
-					//init mod interface
+					//MODインターフェースを初期化
 					Game.mods={};
 					Game.sortedMods=[];
 					Game.brokenMods=[];

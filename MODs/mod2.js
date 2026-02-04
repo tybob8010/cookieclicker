@@ -8,6 +8,7 @@ Game.registerMod('mod1', {
         if (Game.Loader) {
             Game.Loader.Replace('perfectCookie.png', newCookieUrl);
             Game.Win('So much to do so much to see')
+            new Game.Achievement('Oldennnnnnnn! days',loc("Find the <b>forgotten madeleine</b>.")+'<q>DashNet Farms remembers.</q>',[12,3]);
         }
     },
     save: function(){ return ''; },
