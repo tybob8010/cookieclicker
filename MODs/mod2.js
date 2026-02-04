@@ -1,4 +1,4 @@
-Game.registerMod('mod1', {
+Game.registerMod('mod2', {
     init: function() {
         // MOD 読み込み時の通知
         Game.Notify('mod2 Mod Loaded!', 'ようこそ、mod2が有効になりました', '', 3);
