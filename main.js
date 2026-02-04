@@ -9938,7 +9938,7 @@ Game.Launch=function()
 			if (this.bought && this.activateFunction) this.activateFunction();
 			return success;
 		}
-		Game.Upgrade.prototype.earn=function()//just win the upgrades without spending anything
+		Game.Upgrade.prototype.earn=function()//無料でアップグレードを入手
 		{
 			this.unlocked=1;
 			this.bought=1;
@@ -9947,7 +9947,7 @@ Game.Launch=function()
 			Game.recalculateGains=1;
 			if (Game.CountsAsUpgradeOwned(this.pool)) Game.UpgradesOwned++;
 		}
-		Game.Upgrade.prototype.unearn=function()//remove the upgrade, but keep it unlocked
+		Game.Upgrade.prototype.unearn=function()//アップグレードを削除するが、アンロック状態は維持
 		{
 			this.bought=0;
 			Game.upgradesToRebuild=1;
@@ -9967,7 +9967,7 @@ Game.Launch=function()
 			Game.recalculateGains=1;
 			if (Game.CountsAsUpgradeOwned(this.pool)) Game.UpgradesOwned--;
 		}
-		Game.Upgrade.prototype.toggle=function()//cheating only
+		Game.Upgrade.prototype.toggle=function()//チートのみ
 		{
 			if (!this.bought)
 			{
@@ -10055,7 +10055,7 @@ Game.Launch=function()
 		}
 		
 		
-		Game.RebuildUpgrades=function()//recalculate the upgrades you can buy
+		Game.RebuildUpgrades=function()//購入可能なアップグレードを再計算
 		{
 			Game.upgradesToRebuild=0;
 			var list=[];
@@ -10249,7 +10249,7 @@ Game.Launch=function()
 				if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name))
 				{
 					var tierMult=2;
-					//unshackled
+					//解放された
 					if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) tierMult+=me.id==1?0.5:(20-me.id)*0.1;
 					mult*=tierMult;
 				}
@@ -10775,7 +10775,7 @@ Game.Launch=function()
 			for (var i in Game.easterEggs) {if (Game.Has(Game.easterEggs[i])) num++;}
 			return num;
 		}
-		for (var i in Game.eggDrops)//scale egg prices to how many eggs you have
+		for (var i in Game.eggDrops)//所持している卵の数に応じて卵の価格を調整
 		{Game.Upgrades[Game.eggDrops[i]].priceFunc=function(){return Math.pow(2,Game.GetHowManyEggs())*999;}}
 		
 		for (var i in Game.rareEggDrops)
@@ -10801,7 +10801,7 @@ Game.Launch=function()
 				var drop='';
 				if (Math.random()<0.1) drop=choose(Game.rareEggDrops);
 				else drop=choose(Game.eggDrops);
-				if (Game.Has(drop) || Game.HasUnlocked(drop))//reroll if we have it
+				if (Game.Has(drop) || Game.HasUnlocked(drop))//所持していたら再抽選
 				{
 					if (Math.random()<0.1) drop=choose(Game.rareEggDrops);
 					else drop=choose(Game.eggDrops);
@@ -10898,7 +10898,7 @@ Game.Launch=function()
 				if (me.bought && me.unlocked && !me.noPerm && (me.pool=='' || me.pool=='cookie'))
 				{
 					var fail=0;
-					for (var ii in Game.permanentUpgrades) {if (Game.permanentUpgrades[ii]==me.id) fail=1;}//check if not already in another permaslot
+					for (var ii in Game.permanentUpgrades) {if (Game.permanentUpgrades[ii]==me.id) fail=1;}//すでに別の永久スロットに入っていないか確認
 					if (!fail) list.push(me);
 				}
 			}
@@ -11346,15 +11346,15 @@ Game.Launch=function()
 		
 		order=99999;
 		var years=(function(){
-			//years since release
+			//リリースからの年月
 			var d1=new Date(2013,7,8);
 			var d2=new Date();
 			var y=d2.getFullYear()-d1.getFullYear();
 			if ((d2.getMonth()>d1.getMonth() || (d2.getMonth()==d1.getMonth() && d2.getDate()>=d1.getDate()))) {} else y--;
 			return y;
 		})();
-		//only updates on page load
-		//may behave strangely on leap years
+		//ページ読み込み時のみ更新
+		//閏年では挙動がおかしくなる可能性あり
 		Game.NewUpgradeCookie({name:'Birthday cookie',desc:'<q>-</q>',icon:[22,13],power:years,price:99999999999999999999999999999});Game.last.baseDesc=loc("Cookie production multiplier <b>+%1%</b> for every year Cookie Clicker has existed (currently: <b>+%2%</b>).",[1,Beautify(years)])+'<q>Thank you for playing Cookie Clicker!<br>-Orteil</q>';
 		
 		
@@ -11451,7 +11451,7 @@ Game.Launch=function()
 		Game.NewUpgradeCookie({name:'Wheat slims',desc:'-',icon:[28,25],power:1,price:30,locked:1});Game.last.baseDesc=getStrCookieProductionMultiplierPlus(1)+'<br>'+loc("Dropped by %1 plants.",loc("Baker's wheat").toLowerCase())+'<q>The only reason you\'d consider these to be cookies is because you feel slightly sorry for them.</q>';
 		
 		var gardenDrops=['Elderwort biscuits','Bakeberry cookies','Duketater cookies','Green yeast digestives','Fern tea','Ichor syrup','Wheat slims'];
-		for (var i in gardenDrops)//scale by CpS
+		for (var i in gardenDrops)//CpSに応じて倍率調整
 		{
 			var it=Game.Upgrades[gardenDrops[i]];
 			it.priceFunc=function(cost){return function(){return cost*Game.cookiesPs*60;}}(it.basePrice);
@@ -11502,7 +11502,7 @@ Game.Launch=function()
 		
 		
 		order=10000;
-		//early cookies that unlock at the same time as coconut cookies; meant to boost early game a little bit
+		//ココナッツクッキーと同時にアンロックされる序盤用クッキー　序盤を少しだけ強化する目的
 		Game.NewUpgradeCookie({name:'Almond cookies',desc:'Sometimes you feel like one of these. Sometimes you don\'t.',icon:[21,27],power:							2,	price:	99999999});
 		Game.NewUpgradeCookie({name:'Hazelnut cookies',desc:'Tastes like a morning stroll through a fragrant forest, minus the clouds of gnats.',icon:[22,27],power:							2,	price:	99999999});
 		Game.NewUpgradeCookie({name:'Walnut cookies',desc:'Some experts have pointed to the walnut\'s eerie resemblance to the human brain as a sign of its sentience - a theory most walnuts vehemently object to.',icon:[23,27],power:							2,	price:	99999999});
@@ -11831,7 +11831,7 @@ Game.Launch=function()
 		
 		
 		order=40000;
-		new Game.Upgrade('A really good guide book','<b>???</b><q>??????</q>',7,[22,12]);//debug purposes only
+		new Game.Upgrade('A really good guide book','<b>???</b><q>??????</q>',7,[22,12]);//デバッグ用のみ
 		//new Game.Upgrade('A really good guide book','<b>All dungeon locations behave as if unlocked.</b><br><b>You may shift-click a dungeon location to teleport there.</b><q>It even tells you which hotels to avoid!</q>',7,[22,12]);//debug purposes only
 		Game.last.buyFunction=function(){if (Game.Objects['Factory'].minigameLoaded){Game.Objects['Factory'].minigame.computeMapBounds();Game.Objects['Factory'].minigame.updateLocStyles();}}
 		Game.last.pool='debug';
@@ -12142,7 +12142,7 @@ Game.Launch=function()
 				'giftSend','giftGet',
 				//'levelPrestige',
 			],
-			tracks:[],//populated externally
+			tracks:[],//外部から値が設定される
 			onSound:0,
 			onTrack:0,
 			trackLooped:true,
@@ -12482,7 +12482,7 @@ Game.Launch=function()
 						}
 					});
 					
-					//feature cut! too cumbersome to use
+					//機能カット！使うには面倒すぎる
 					var icon=0;
 					l('giftBoxIcon').dataset.icon='none';
 					var func=function(){
@@ -12721,7 +12721,7 @@ Game.Launch=function()
 		Game.last.lasting=true;
 		
 		
-		//end of upgrades
+		//アップグレードの終わり
 		
 		
 		
@@ -12844,7 +12844,7 @@ Game.Launch=function()
 				
 				me.clickFunction=function(me){return function()
 				{
-					//undo season
+					//シーズンを元に戻す
 					if (me.bought && Game.season && me==Game.seasons[Game.season].triggerUpgrade)
 					{
 						me.lose();
@@ -12869,7 +12869,7 @@ Game.Launch=function()
 		Game.getSeasonDuration=function(){return Game.fps*60*60*24;}
 		Game.computeSeasons();
 		
-		//alert untiered building upgrades
+		//ランクなしの建物アップグレードを通知
 		for (var i in Game.Upgrades)
 		{
 			var me=Game.Upgrades[i];
@@ -12930,7 +12930,7 @@ Game.Launch=function()
 		}
 		
 		/*=====================================================================================
-		ACHIEVEMENTS
+		実績(ACHIEVEMENTS)
 		=======================================================================================*/		
 		Game.Achievements={};
 		Game.AchievementsById={};
@@ -12997,7 +12997,7 @@ Game.Launch=function()
 				}
 			}
 		}
-		Game.Achievement.prototype.toggle=function()//cheating only
+		Game.Achievement.prototype.toggle=function()//チート専用
 		{
 			if (!this.won)
 			{
@@ -13064,10 +13064,10 @@ Game.Launch=function()
 			return achiev;
 		}
 		
-		//define achievements
-		//WARNING : do NOT add new achievements in between, this breaks the saves. Add them at the end !
+		//実績を定義
+		//警告：間に新しい実績を追加しないこと！セーブデータが壊れます。必ず最後に追加してください！
 		
-		var order=0;//this is used to set the order in which the items are listed
+		var order=0;//アイテムの表示順を設定するために使われる
 		
 		Game.BankAchievement('Wake and bake');
 		Game.BankAchievement('Making some dough');
@@ -13666,7 +13666,7 @@ Game.Launch=function()
 		order=1600;Game.TieredAchievement('Worth its weight in lead','','Alchemy lab',9);
 		order=1700;Game.TieredAchievement('What happens in the vortex stays in the vortex','','Portal',9);
 		order=1800;Game.TieredAchievement('Invited to yesterday\'s party','','Time machine',9);
-		order=1900;Game.TieredAchievement('Downsizing','','Antimatter condenser',9);//the trailer got me really hyped up but i've read some pretty bad reviews. is it watchable ? is it worth seeing ? i don't mind matt damon
+		order=1900;Game.TieredAchievement('Downsizing','','Antimatter condenser',9);//予告編を見てすごくワクワクしたけど、いくつかかなり悪いレビューも読んだ。見ても大丈夫かな？ 見る価値あるかな？ マット・デイモンは気にしない。
 		order=2000;Game.TieredAchievement('My eyes','','Prism',9);
 		order=2100;Game.TieredAchievement('Maybe a chance in hell, actually','','Chancemaker',9);
 		
@@ -14116,7 +14116,7 @@ Game.Launch=function()
 		バフ
 		=======================================================================================*/
 		
-		Game.buffs={};// 現在発動中のバフ（名前別）
+		Game.buffs={};//現在発動中のバフ（名前別）
 		Game.buffsI=0;
 		Game.buffsL=l('buffs');
 		Game.gainBuff=function(type,time,arg1,arg2,arg3)
@@ -14136,23 +14136,23 @@ Game.Launch=function()
 				desc:'',
 				icon:[0,0]
 			};
-			if (Game.buffs[obj.name])// すでにこの名前のバフが発動中の場合
+			if (Game.buffs[obj.name])//すでにこの名前のバフが発動中の場合
 			{
-				var buff = Game.buffs[obj.name];// obj.max が true の場合、時間は新旧の最大値に
-				if (obj.max) buff.time = Math.max(obj.time, buff.time); // 新しい時間は古い時間と新しい時間の最大値、obj.add が true の場合、時間を加算
-				if (obj.add) buff.time += obj.time; // 新しい時間は古い時間＋新しい時間、obj.max も obj.add も false の場合、時間を上書き
-				if (!obj.max && !obj.add) buff.time = obj.time; // 新しい時間で上書き
+				var buff = Game.buffs[obj.name];//obj.max が true の場合、時間は新旧の最大値に
+				if (obj.max) buff.time = Math.max(obj.time, buff.time); //新しい時間は古い時間と新しい時間の最大値、obj.add が true の場合、時間を加算
+				if (obj.add) buff.time += obj.time; //新しい時間は古い時間＋新しい時間、obj.max も obj.add も false の場合、時間を上書き
+				if (!obj.max && !obj.add) buff.time = obj.time; //新しい時間で上書き
 				buff.maxTime=buff.time;
 			}
 			else//新しいバフを作る
 			{
-				for (var i in obj)// パラメータをバフに適用
+				for (var i in obj)//パラメータをバフに適用
 				{buff[i]=obj[i];}
 				buff.maxTime=buff.time;
 				Game.buffs[buff.name]=buff;
 				buff.id=Game.buffsI;
 				
-				// DOMを作成
+				//DOMを作成
 				Game.buffsL.innerHTML=Game.buffsL.innerHTML+'<div id="buff'+buff.id+'" class="crate enabled buff" '+(buff.desc?Game.getTooltip(
 					'<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+buff.desc+'</div>'
 				,'left',true):'')+' style="opacity:1;float:none;display:block;'+writeIcon(buff.icon)+'"></div>';
@@ -14165,9 +14165,9 @@ Game.Launch=function()
 			Game.storeToRefresh=1;
 			return buff;
 		}
-		Game.hasBuff=function(what)// この名前のバフが発動していなければ0を返す。発動中ならそのバフを返す
+		Game.hasBuff=function(what)//この名前のバフが発動していなければ0を返す。発動中ならそのバフを返す
 		{if (!Game.buffs[what] || Game.buffs[what].time<=0) return 0; else return Game.buffs[what];}
-		Game.updateBuffs=function()// 毎フレームのロジック実行時に呼ばれる
+		Game.updateBuffs=function()//毎フレームのロジック実行時に呼ばれる
 		{
 			for (var i in Game.buffs)
 			{
@@ -14196,24 +14196,24 @@ Game.Launch=function()
 				}
 			}
 		}
-		Game.killBuff = function(what) // 名前で指定したバフを削除
+		Game.killBuff = function(what) //名前で指定したバフを削除
 		{ if (Game.buffs[what]) { Game.buffs[what].time = 0; /* Game.buffs[what] = 0; */ } }
 
-		Game.killBuffs = function() // すべてのバフを削除
+		Game.killBuffs = function() //すべてのバフを削除
 		{}
 		{Game.buffsL.innerHTML='';Game.buffs={};Game.recalculateGains=1;Game.storeToRefresh=1;}
 		
 		
-		Game.buffTypes=[];// バフのアーキタイプ；これらから宣言されたバフのみセーブ＆ロード可能
+		Game.buffTypes=[];//バフのアーキタイプ；これらから宣言されたバフのみセーブ＆ロード可能
 		Game.buffTypesByName=[];
 		Game.buffTypesN=0;
 		Game.buffType=function(name,func)
 		{
 			this.name=name;
 			this.func = func;
-			// これはバフオブジェクトを返す関数
-			// 引数は「time」（秒）必須と、最大3つまでの任意引数
-			// 任意引数はfloatとしてセーブ/ロードされる
+			//これはバフオブジェクトを返す関数
+			//引数は「time」（秒）必須と、最大3つまでの任意引数
+			//任意引数はfloatとしてセーブ/ロードされる
 			this.id=Game.buffTypesN;
 			this.vanilla=Game.vanilla;
 			Game.buffTypesByName[this.name]=this;
@@ -14384,7 +14384,7 @@ Game.Launch=function()
 				desc:loc("You find %1% more golden cookies for the next %2.",[10,Game.sayTime(time*Game.fps,-1)]),
 				icon:[29,16],
 				time:time*Game.fps,
-				// 追加: true
+				//追加: true
 			};
 		});
 		new Game.buffType('haggler luck',function(time,pow)
@@ -14570,7 +14570,7 @@ Game.Launch=function()
 			};
 		});
 		
-		// バフ終了
+		//バフ終了
 		
 		
 		
@@ -14581,10 +14581,10 @@ Game.Launch=function()
 		Game.UpdateGrandmapocalypse=function()
 		{
 			if (Game.Has('Elder Covenant') || Game.Objects['Grandma'].amount==0) Game.elderWrath=0;
-			else if (Game.pledgeT>0)// 誓約が有効なら値を下げる
+			else if (Game.pledgeT>0)//誓約が有効なら値を下げる
 			{
 				Game.pledgeT--;
-				if (Game.pledgeT==0)// 0になった？誓約を再度購入可能にする
+				if (Game.pledgeT==0)//0になった？誓約を再度購入可能にする
 				{
 					Game.Lock('Elder Pledge');
 					Game.Unlock('Elder Pledge');
@@ -14599,7 +14599,7 @@ Game.Launch=function()
 				}
 				if (Math.random()<0.001 && Game.elderWrath<Game.Has('One mind')+Game.Has('Communal brainsweep')+Game.Has('Elder Pact'))
 				{
-					Game.elderWrath++;// すでに誓約済みか？エルダーの怒りを段階的に変化させる
+					Game.elderWrath++;//すでに誓約済みか？エルダーの怒りを段階的に変化させる
 				}
 				if (Game.Has('Elder Pact') && Game.Upgrades['Elder Pledge'].unlocked==0)
 				{
@@ -14628,9 +14628,9 @@ Game.Launch=function()
 		
 		function inRect(x,y,rect)
 		{
-			// 点(x, y)が回転した長方形 rect{w, h, r, o}（幅、高さ、回転角[ラジアン]、y原点）の内部にあるか判定する
-			// （座標は正規化されている必要あり）
-			// これ、たぶんネットで見つけたやつ
+			//点(x, y)が回転した長方形 rect{w, h, r, o}（幅、高さ、回転角[ラジアン]、y原点）の内部にあるか判定する
+			//（座標は正規化されている必要あり）
+			//これ、たぶんネットで見つけたやつ
 			var dx = x+Math.sin(-rect.r)*(-(rect.h/2-rect.o)),dy=y+Math.cos(-rect.r)*(-(rect.h/2-rect.o));
 			var h1 = Math.sqrt(dx*dx + dy*dy);
 			var currA = Math.atan2(dy,dx);
@@ -14642,7 +14642,7 @@ Game.Launch=function()
 		}
 		
 		Game.wrinklerHP=2.1;
-		Game.wrinklerLimit=14;// ブーストに関係なく絶対上限
+		Game.wrinklerLimit=14;//ブーストに関係なく絶対上限
 		Game.wrinklers=[];
 		for (var i=0;i<Game.wrinklerLimit;i++)
 		{
@@ -14752,7 +14752,7 @@ Game.Launch=function()
 						else if (godLvl==3) chance*=1.5;
 					}
 					if (Game.Has('Wrinkler doormat')) chance=0.1;
-					if (Math.random()<chance)// 再スポーン
+					if (Math.random()<chance)//再スポーン
 					{
 						Game.SpawnWrinkler(me);
 					}
@@ -14771,7 +14771,7 @@ Game.Launch=function()
 				}
 				if (me.phase==2)
 				{
-					me.sucked+=(((Game.cookiesPs/Game.fps)*Game.cpsSucked));// クッキーを吸い込む
+					me.sucked+=(((Game.cookiesPs/Game.fps)*Game.cpsSucked));//クッキーを吸い込む
 				}
 				if (me.phase>0)
 				{
@@ -14805,7 +14805,7 @@ Game.Launch=function()
 								me.type = !me.type;
 								PlaySound('snd/shimmerClick.mp3');
 							}
-							// 開発者モードでシワシワ虫をCtrlクリックすると、光っているかどうかを切り替え
+							//開発者モードでシワシワ虫をCtrlクリックすると、光っているかどうかを切り替え
 							else
 							{
 								Game.playWrinklerSquishSound();
@@ -14854,9 +14854,9 @@ Game.Launch=function()
 					if (Game.Has('Sacrilegious corruption')) toSuck*=1.05;
 					toSuck*=1+Game.auraMult('Dragon Guts')*0.2;
 					if (me.type == 1) toSuck *= 3; 
-					// 光るシワシワ虫は希少で儲かる種類
+					//光るシワシワ虫は希少で儲かる種類
 					me.sucked *= toSuck; 
-					// クッキー生地はシワシワ虫の消化管内で不思議な挙動をする
+					//クッキー生地はシワシワ虫の消化管内で不思議な挙動をする
 					if (Game.Has('Wrinklerspawn')) me.sucked*=1.05;
 					if (Game.hasGod)
 					{
@@ -15409,7 +15409,7 @@ Game.Launch=function()
 						,'top')+
 						'></div>';
 					}
-					if (Game.dragonLevel>=27)// 2番目のオーラスロット；最後の建物で増加
+					if (Game.dragonLevel>=27)//2番目のオーラスロット；最後の建物で増加
 					{
 						var icon=Game.dragonAuras[Game.dragonAura2].pic;
 						str+='<div class="crate enabled" style="opacity:1;position:absolute;right:80px;top:-58px;'+writeIcon(icon)+'" '+Game.clickStr+'="PlaySound(\'snd/tick.mp3\');Game.SelectDragonAura(1);" '+Game.getTooltip(
@@ -15541,12 +15541,12 @@ Game.Launch=function()
 		
 		Game.MakeMilk=function()
 		{
-			// ミルク用アセットを手続き的に生成するシステム
-			// 中央の色がベース、1番目の色は乗算、3番目の色はスクリーン合成
-			// 特殊効果は画像オーバーレイとして追加
-			var cols=['#6D84DA','#D8BFA9','#E6E9C3']; // プレーンミルク
-			var cols=['#FF4C0E','#553626','#C0784A']; // チョコレートミルク
-			var cols=['#810600','#D61643','#C63324']; // チェリーミルク
+			//ミルク用アセットを手続き的に生成するシステム
+			//中央の色がベース、1番目の色は乗算、3番目の色はスクリーン合成
+			//特殊効果は画像オーバーレイとして追加
+			var cols=['#6D84DA','#D8BFA9','#E6E9C3']; //プレーンミルク
+			var cols=['#FF4C0E','#553626','#C0784A']; //チョコレートミルク
+			var cols=['#810600','#D61643','#C63324']; //チェリーミルク
 			var bubbles=false;
 			
 			var pics=['milkMask.png','milkDarkMask.jpg','milkCol1Mask.jpg','milkCol2Mask.jpg'];
@@ -15578,7 +15578,7 @@ Game.Launch=function()
 				ctx2.fillRect(0,0,w,h);
 				ctx.globalCompositeOperation='multiply';
 				ctx.drawImage(c2,0,0);
-				// ハイライト
+				//ハイライト
 				ctx2.globalCompositeOperation='source-over';
 				ctx2.drawImage(Pic('milkCol2Mask.jpg'),0,0);
 					//エフェクト
@@ -15592,18 +15592,18 @@ Game.Launch=function()
 				ctx2.fillRect(0,0,w,h);
 				ctx.globalCompositeOperation='screen';
 				ctx.drawImage(c2,0,0);
-				// ダークグラデーション
+				//ダークグラデーション
 				ctx.globalCompositeOperation='multiply';
 				ctx.drawImage(Pic('milkDarkMask.jpg'),0,0);
 				
-				// エフェクト
+				//エフェクト
 				if (bubbles)
 				{
 					ctx.globalCompositeOperation='overlay';
 					ctx.drawImage(Pic('milkFXbubbles.jpg'),0,0);
 				}
 				
-				// 透明度を制限
+				//透明度を制限
 				ctx.globalCompositeOperation='destination-in';
 				ctx.drawImage(Pic('milkMask.png'),0,0);
 				c.style.cssText='position:absolute;left:0px;top:0px;border:4px solid #999;z-index:1000000;';
@@ -15630,7 +15630,7 @@ Game.Launch=function()
 		}
 		Game.Milk=Game.Milks[0];
 		
-		Game.mousePointer=0;// 1のとき、左画面にマウスをポインターとして表示
+		Game.mousePointer=0;//1のとき、左画面にマウスをポインターとして表示
 		
 		Game.cookieOriginX=0;
 		Game.cookieOriginY=0;
@@ -15638,7 +15638,7 @@ Game.Launch=function()
 		{
 			Timer.clean();
 			//背景
-			if (!Game.Background)// いくつかの初期化処理
+			if (!Game.Background)//いくつかの初期化処理
 			{
 				Game.Background=l('backgroundCanvas').getContext('2d');
 				Game.Background.canvas.width=Game.Background.canvas.parentNode.offsetWidth;
