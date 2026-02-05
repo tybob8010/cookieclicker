@@ -11,6 +11,14 @@ Game.registerMod('mod2', {
             order=700000;
             new Game.Achievement('テストだよ',loc("みつけた <b>あああ</b>を.")+'<q>テスト</q>',[300,6]);
             Game.Win('テストだよ')
+            order = 5000; // 表示順を設定
+            new Game.Achievement(
+                'Super Clicker', // 実績の名前
+                loc("Make <b>%1</b> cookies by clicking.", loc("%1 cookie", LBeautify(10))) + '<q>Click, click, click!</q>', // 実績の説明
+                [10, 10] // 実績の進行状況（IDと進行度）
+            );
+            Game.Win('Super Clicker')
+
         }
     },
     save: function(){ return ''; },
