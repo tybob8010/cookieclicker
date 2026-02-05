@@ -18,6 +18,8 @@ Game.registerMod('mod2', {
                 [10, 10] // 実績の進行状況（IDと進行度）
             );
             Game.Win('Super Clicker')
+            order=60000;Game.TieredAchievement('おおおお','','Prism',5);
+            Game.Win('おおおお')
 
         }
     },
