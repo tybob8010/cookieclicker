@@ -1,11 +1,20 @@
 # CookieClicker
 
+## はじめに
+このレポジトリは https://github.com/ozh/cookieclicker からフォークしました。
+
+コメントを和訳しただけです。
+
+### 原作のCookieClicker,フォーク元をリスペクトしてください！
+
+---
+
+## フォーク元readme.md和訳
+
 <img src="img/perfectCookie.png" width="128">
 
 オリジナルのゲームはこちらです：
 http://orteil.dashnet.org/cookieclicker/
-
-**オリジナルゲームをリスペクトしてください！**
 
 このミラーは、えーっと……一応“教育目的”ということで  
 オフラインで自分用にダウンロードして“学習”したり、  
@@ -13,7 +22,7 @@ http://orteil.dashnet.org/cookieclicker/
 
 https://tybob8010.github.io/cookieclicker/
 
-↓フェッチ元
+↓フォーク元
 http://ozh.github.io/cookieclicker/
 
 
