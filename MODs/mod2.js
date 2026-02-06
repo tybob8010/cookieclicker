@@ -20,7 +20,6 @@ Game.registerMod('mod2', {
             Game.Win('Super Clicker')
             order=60000;Game.TieredAchievement('おおおお','','Prism',5);
             Game.Win('おおおお')
-            Game.Win('A round of applause2')
 
         }
     },
