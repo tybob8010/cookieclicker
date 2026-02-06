@@ -1,10 +1,11 @@
 /*
-Orteil's sloppy Cookie Clicker dungeons
+Orteilによる雑な Cookie Clicker ダンジョン
 
-Optimizations to do (not mentioning the dozens of missing features) :
--use canvas instead
--only compute AI for mobs with 2 tiles of view
+今後やるべき最適化（大量に不足している機能は除く）：
+・canvas を使うようにする
+・視界が2タイル以内のモブだけAI計算を行う
 */
+
 var LaunchDungeons=function()
 {
 	Game.GetWord=function(type)
@@ -16,7 +17,7 @@ var LaunchDungeons=function()
 	}
 	
 	/*=====================================================================================
-	DUNGEONS
+	ダンジョン
 	=======================================================================================*/
 	Game.DungeonTypes=[];
 	Game.DungeonType=function(name)
@@ -29,7 +30,7 @@ var LaunchDungeons=function()
 	};
 	
 	/*=====================================================================================
-	CREATE DUNGEON TYPES
+	ダンジョンのタイプを作る
 	=======================================================================================*/
 	new Game.DungeonType('Factory').
 	nameGenerator=function(){
@@ -61,7 +62,7 @@ var LaunchDungeons=function()
 	
 	
 	/*=====================================================================================
-	CREATE TILE TYPES
+	床のタイプを作る
 	=======================================================================================*/
 	
 	var D=new DungeonGen();
@@ -98,21 +99,21 @@ var LaunchDungeons=function()
 	
 	
 	/*=====================================================================================
-	CREATE MONSTER TYPES
+	モンスターのタイプを作る
 	=======================================================================================*/
 	
 	/*
-	An explanation of stats :
-		-hp : health points
-		-speed : determines who attacks first in a fight; bypasses dodging; determines how fast heroes auto-run dungeons
-		-might : determines how much damage is done to opponents
-		-guard : lowers incoming damage
-		-dodge : chance of avoiding incoming attacks completely (affected by the opponent's speed)
-		-luck : heroes only, determines drops and rare encounters
-		-rarity : monsters only, determines how often a monster is added to the spawn table
-		-level : monsters only, determines which average room depth the monster is more likely to spawn in (also determines the loot amount)
+	ステータスの説明：
+		-hp : 体力（ヒットポイント）
+		-speed : 戦闘でどちらが先に攻撃するかを決定；回避を無視；ヒーローがダンジョンを自動走行する速度にも影響
+		-might : 敵に与えるダメージ量を決定
+		-guard : 受けるダメージを軽減
+		-dodge : 攻撃を完全に回避する確率（相手の speed の影響を受ける）
+		-luck : ヒーロー専用。ドロップやレア遭遇を決定
+		-rarity : モンスター専用。スポーンテーブルに追加される頻度を決定
+		-level : モンスター専用。出現しやすい平均部屋深度を決定（ドロップ量にも影響）
 	*/
-	Game.monsterIconY=10;//offset for dungeonItems.png monsters
+	Game.monsterIconY=10;// dungeonItems.png 内のモンスター用オフセット
 	Game.Monsters=[];
 	Game.Monster=function(name,pic,icon,level,stats,loot)
 	{
@@ -136,7 +137,7 @@ var LaunchDungeons=function()
 	var chestLoot={cookies:{min:2,max:20,prob:1},gear:{prob:0.1}};
 	var bossLoot={cookies:{min:10,max:50,prob:1},gear:{prob:0.2}};
 	
-	//general monsters
+	// 一般モンスター
 	new Game.Monster('Doughling','doughling',[0,0],1,{hp:5,might:2,guard:2,speed:6,dodge:6,rarity:0.7},basicLoot);
 	new Game.Monster('Elder doughling','elderDoughling',[1,0],7,{hp:20,might:7,guard:7,speed:4,dodge:4,rarity:0.7},goodLoot);
 	new Game.Monster('Angry sentient cookie','angrySentientCookie',[5,0],5,{hp:16,might:8,guard:4,speed:5,dodge:5,rarity:1},basicLoot);
@@ -146,7 +147,7 @@ var LaunchDungeons=function()
 	new Game.Monster('Sugar bunny','sugarBunny',[8,0],5,{hp:10,might:3,guard:8,speed:12,dodge:9,rarity:0.001},{cookies:{min:1000,max:10000}});
 	Game.Monsters['Sugar bunny'].onKill=function(){Game.Win('Follow the white rabbit');};Game.Monsters['Sugar bunny'].AI='flee';
 	
-	//factory monsters
+	// 工場モンスター
 	new Game.Monster('Crazed kneader','crazedKneader',[0,2],6,{hp:18,might:6,guard:8,speed:3,dodge:2,rarity:0.5},goodLoot);
 	new Game.Monster('Crazed chip-spurter','crazedDoughSpurter',[0,2],6,{hp:15,might:6,guard:8,speed:5,dodge:3,rarity:0.5},goodLoot);
 	new Game.Monster('Alarm bot','alarmTurret',[3,2],2,{hp:6,might:3,guard:5,speed:8,dodge:8,rarity:0.5},basicLoot);
@@ -169,10 +170,10 @@ var LaunchDungeons=function()
 	}
 	
 	/*=====================================================================================
-	ENTITY MECHANICS
+	// エンティティの仕組み
 	=======================================================================================*/
 	
-	Game.Entity=function(type,subtype,dungeon,pic,stats)//objects you could find on the map : doors, mobs, interactables, items, player, exits...
+	Game.Entity=function(type,subtype,dungeon,pic,stats)// マップ上で見つけられるオブジェクト：ドア、モブ、操作可能オブジェクト、アイテム、プレイヤー、出口 etc...
 	{
 		this.type=type;
 		this.subtype=subtype||'';
@@ -209,7 +210,7 @@ var LaunchDungeons=function()
 			this.fighting=0;
 			for (var i in Game.Heroes[this.subtype].stats){this.stats[i]=Game.Heroes[this.subtype].stats[i];}
 			
-			//increase stats by amount of matching building (change that later to use gear instead)
+			// 一致する建物の数に応じてステータスを増加させる（後で装備を使うように変更予定）
 			var mult=Math.max(0,(Game.Objects[this.dungeon.type].amount/20-1));
 			this.stats.hpm+=Math.ceil(mult*2);
 			this.stats.hp=this.stats.hpm;
@@ -223,7 +224,7 @@ var LaunchDungeons=function()
 			this.zIndex=5;
 			this.value=0;
 		}
-		else if (this.type=='destructible')//crates, doors
+		else if (this.type=='destructible')// 箱、ドア
 		{
 			this.obstacle=1;
 			this.life=3;
@@ -258,7 +259,7 @@ var LaunchDungeons=function()
 				if (Game.Monsters[this.subtype].quotes[what]) this.dungeon.Log(this.subtype+' : "<span style="color:#f96;">'+choose(Game.Monsters[this.subtype].quotes[what].split('|'))+'</span>"');
 			}
 		}
-		this.Draw=function()//return the string to draw this
+		this.Draw=function()// 描画するための文字列を返す
 		{
 			var name='?';
 			if (this.subtype=='random') name='clutter'; else name=this.subtype;
@@ -281,43 +282,43 @@ var LaunchDungeons=function()
 			}
 			return '<div class="thing" title="'+name+'" style="z-index:'+(200+this.zIndex)+';left:'+(this.x*16)+'px;top:'+(this.y*16)+'px;background-position:'+(-this.pic[0]*16)+'px '+(-this.pic[1]*16)+'px;"></div>';
 		}
-		this.Wander=function()//AI to move around aimlessly
+		this.Wander=function()// 目的なく歩き回るAI
 		{
 			this.targets=[];
 			this.targets.push([-1,0],[1,0],[0,-1],[0,1]);
 			this.Move();
 		}
-		this.GoTo=function(x,y)//AI to move to a specific point
+		this.GoTo=function(x,y)// 特定の地点に移動するAI
 		{
 			this.targets=[];
 			if (this.x<x) this.targets.push([1,0]);
 			if (this.x>x) this.targets.push([-1,0]);
 			if (this.y<y) this.targets.push([0,1]);
 			if (this.y>y) this.targets.push([0,-1]);
-			if (!this.Move())//really stuck? try to maneuver laterally!
+			if (!this.Move())// 本当に詰まった？横に動かしてみよう！
 			{
 				this.targets=[];
-				if (this.x==x) this.targets.push([1,0],[-1,0]);//somehow this feels inverted... but it doesn't work the other way
-				if (this.y==y) this.targets.push([0,1],[0,-1]);//hypothesis : *MAGIC*
+				if (this.x==x) this.targets.push([1,0],[-1,0]); // なんとなく逆な気がする…でも逆にすると動かない
+				if (this.y==y) this.targets.push([0,1],[0,-1]); // 仮説：*魔法*
 				this.Move();
 			}
 		}
-		this.Flee=function(x,y)//AI to run away from a specific point
+		this.Flee=function(x,y)// 特定の地点から逃げるAI
 		{
 			this.targets=[];
 			if (this.x>x) this.targets.push([1,0]);
 			if (this.x<x) this.targets.push([-1,0]);
 			if (this.y>y) this.targets.push([0,1]);
 			if (this.y<y) this.targets.push([0,-1]);
-			if (!this.Move())//really stuck? try to maneuver laterally!
+			if (!this.Move())// 本当に行き詰まった？横に動いてみよう！
 			{
 				this.targets=[];
-				if (this.x==x) this.targets.push([1,0],[-1,0]);//somehow this feels inverted... but it doesn't work the other way
-				if (this.y==y) this.targets.push([0,1],[0,-1]);//hypothesis : *MAGIC*
+				if (this.x==x) this.targets.push([1,0],[-1,0]); // なんとなく逆な気がする…でも逆にすると動かない
+				if (this.y==y) this.targets.push([0,1],[0,-1]); // 仮説：*魔法*
 				this.Move();
 			}
 		}
-		this.Move=function()//AI to move to the target
+		this.Move=function()// ターゲットに向かって移動するAI
 		{
 			if (this.targets.length>0)
 			{
@@ -354,9 +355,9 @@ var LaunchDungeons=function()
 			}
 			return 0;
 		}
-		this.HitBy=function(by)//attacked by another entity
+		this.HitBy=function(by)// 他のエンティティに攻撃される
 		{
-			if (this.type=='destructible' && by.type=='hero')//break destructibles
+			if (this.type=='destructible' && by.type=='hero')// 破壊可能オブジェクトを壊す
 			{
 				by.stuck=0;
 				this.life--;
@@ -367,13 +368,13 @@ var LaunchDungeons=function()
 				}
 				else this.pic=[this.pic[0],this.pic[1]+1];
 			}
-			else if (this.type=='special' && this.subtype=='upgrade')//upgrade relic
+			else if (this.type=='special' && this.subtype=='upgrade')// 遺物を強化
 			{
 				this.obstacle=0;
 				if (Game.Upgrades[this.value]) Game.Upgrades[this.value].earn();
 				this.value='';
 			}
-			else if ((this.type=='monster' && by.type=='hero') || (this.type=='hero' && by.type=='monster') && this.stats.hp>0)//it's a fight!
+			else if ((this.type=='monster' && by.type=='hero') || (this.type=='hero' && by.type=='monster') && this.stats.hp>0)// 戦闘だ！
 			{
 				by.stuck=0;
 				
@@ -381,7 +382,7 @@ var LaunchDungeons=function()
 				var hero=(this.type=='hero'?this:by);
 				this.dungeon.currentOpponent=monster;
 				
-				if (monster.fighting==0)//first meeting
+				if (monster.fighting==0)// 初対面
 				{
 					Game.Heroes[hero.subtype].Say('meet '+Game.Monsters[monster.subtype].name);
 					this.Say('fight');
@@ -400,7 +401,7 @@ var LaunchDungeons=function()
 				if (this.type=='hero') defenderName=Game.Heroes[this.subtype].name;
 				else if (this.type=='monster') defenderName=Game.Monsters[this.subtype].name;
 				
-				//battle formulas (have fun with these)
+				// 戦闘計算式（遊んでみてね）
 				attackStr+=attackerName+' swings at '+defenderName+'!';
 				var damage=Math.round(Math.max(1,Math.min(by.stats.might,Math.pow(((by.stats.might+2.5)/Math.max(1,this.stats.guard)),2)))*(0.8+Math.random()*0.4+Math.pow(Math.random()*0.8,6)));
 				var dodge=Math.random()>(by.stats.speed/Math.max(1,this.stats.dodge+2.5));
@@ -410,21 +411,21 @@ var LaunchDungeons=function()
 				}
 				else
 				{
-					if (by.stats.luck && by.type=='hero' && Math.random()<by.stats.luck*0.01) {damage*=2;attackStr+=' <b>It\'s a critical!</b>';}//very rare critical based on luck
+					if (by.stats.luck && by.type=='hero' && Math.random()<by.stats.luck*0.01) {damage*=2;attackStr+=' <b>It\'s a critical!</b>';}// 運に応じた非常に稀なクリティカル
 					attackStr+=' <b>'+damage+'</b> damage!';
 					
 					this.stats.hp-=damage;
 					this.stats.hp=Math.max(this.stats.hp,0);
 					if (this.stats.luck && this.type=='hero')
 					{
-						if (this.stats.hp==0 && Math.random()<this.stats.luck*0.01) {this.stats.hp=1;attackStr+=' '+defenderName+' was saved from certain death!';}//very rare life-saving based on luck
+						if (this.stats.hp==0 && Math.random()<this.stats.luck*0.01) {this.stats.hp=1;attackStr+=' '+defenderName+' was saved from certain death!';}// 運に応じた非常に稀な命を救う効果
 					}
 				}
 				
 				if (this.type=='hero') attackStr='<span style="color:#f99;">'+attackStr+'</span>';
 				if (attackStr!='') this.dungeon.Log(attackStr);
 				
-				if (this.stats.hp<=0)//die
+				if (this.stats.hp<=0)//死ぬ
 				{
 					this.dungeon.Log(attackerName+' crushed '+defenderName+'!');
 					if (this.type=='hero')
@@ -443,10 +444,10 @@ var LaunchDungeons=function()
 						if (Game.Monsters[this.subtype].loot)
 						{
 							var loot=Game.Monsters[this.subtype].loot;
-							if (loot.gear && (!loot.gear.prob || Math.random()<loot.gear.prob)) {}//drop gear
+							if (loot.gear && (!loot.gear.prob || Math.random()<loot.gear.prob)) {}// 装備をドロップ
 							if (loot.cookies && (!loot.cookies.prob || Math.random()<loot.cookies.prob))
 							{
-								var entity=this.dungeon.AddEntity('item','cookies',this.x,this.y);//drop cookies
+								var entity=this.dungeon.AddEntity('item','cookies',this.x,this.y);//クッキーをドロップ
 								entity.value=Math.round(loot.cookies.min+Math.random()*(loot.cookies.max-loot.cookies.min));
 							}
 						}
@@ -456,20 +457,20 @@ var LaunchDungeons=function()
 				}
 			}
 		}
-		this.Turn=function()//do this every turn (walk around, heal up...)
+		this.Turn=function()// 毎ターンこれを行う（歩き回る、回復する…）
 		{
 			if (this.type=='monster')
 			{
 				var howManyTurns=this.GetInitiative();
 				for (var i=0;i<howManyTurns;i++)
 				{
-					if (1==1)//this.AI!='static')
+					if (1==1)// this.AI が 'static' でない場合
 					{
-						if (this.AI=='flee') this.Flee(this.dungeon.heroEntity.x,this.dungeon.heroEntity.y);//flee from the player
+						if (this.AI=='flee') this.Flee(this.dungeon.heroEntity.x,this.dungeon.heroEntity.y);// プレイヤーから逃げる
 						else
 						{
-							this.GoTo(this.dungeon.heroEntity.x,this.dungeon.heroEntity.y);//track the player
-							if (this.stuck || this.targets.length==[]) this.Wander();//can't reach the player? walk around randomly
+							this.GoTo(this.dungeon.heroEntity.x,this.dungeon.heroEntity.y);// プレイヤーを追跡
+							if (this.stuck || this.targets.length==[]) this.Wander();// プレイヤーに届かない？ランダムに歩き回ろう
 						}
 					}
 				}
@@ -480,8 +481,8 @@ var LaunchDungeons=function()
 				this.stuck=Math.min(10,this.stuck);
 				this.targets=[];
 			}
-			if ((this.type=='hero' || this.type=='monster') && this.fighting==0 && this.stats.hp<this.stats.hpm) this.stats.hp++;//heal up
-			if (this.type=='hero')//collect items and cookies
+			if ((this.type=='hero' || this.type=='monster') && this.fighting==0 && this.stats.hp<this.stats.hpm) this.stats.hp++;// 回復する
+			if (this.type=='hero')//アイテムとクッキーを集める
 			{
 				var entities=this.dungeon.GetEntities(this.x,this.y);
 				for (var i in entities)
@@ -489,7 +490,7 @@ var LaunchDungeons=function()
 					if (entities[i].type=='item' && entities[i].subtype=='cookies')
 					{
 						var entity=entities[i];
-						var value=Math.ceil(entity.value*Game.Objects[this.dungeon.type].amount*50*(1+Math.random()*((this.stats.luck)/20)));//temporary; scale with matching building CpS later
+						var value=Math.ceil(entity.value*Game.Objects[this.dungeon.type].amount*50*(1+Math.random()*((this.stats.luck)/20)));// 一時的な処理；後で一致する建物の CpS に応じてスケールさせる
 						if (value>0)
 						{
 							this.dungeon.Log('<span style="color:#9f9;">Found <b>'+Beautify(value)+'</b> cookie'+(value==1?'':'s')+'!</span>');
@@ -513,7 +514,7 @@ var LaunchDungeons=function()
 	}
 	
 	/*=====================================================================================
-	DUNGEON MECHANICS
+	ダンジョンのシステム
 	=======================================================================================*/
 	
 	Game.Dungeons=[];
@@ -559,7 +560,7 @@ var LaunchDungeons=function()
 		}
 		
 		this.entities=[];
-		this.GetEntities=function(x,y)//returns the first entity found on tile x,y
+		this.GetEntities=function(x,y)// タイル (x, y) 上で見つかった最初のエンティティを返す
 		{
 			var entities=[];
 			for (var i in this.entities) {if (this.entities[i].x==x && this.entities[i].y==y) entities.push(this.entities[i]);}
@@ -590,7 +591,7 @@ var LaunchDungeons=function()
 			return str;
 		}
 		
-		this.CheckObstacle=function(x,y)//returns 0 for no obstacle; -1 for a wall; an entity if there's at least one entity on this tile
+		this.CheckObstacle=function(x,y)// 障害物がない場合は 0 を返す；壁の場合は -1 を返す；このタイルにエンティティが1つでもいる場合はそのエンティティを返す
 		{
 			if (x<0 || x>=this.map.w || y<0 || y>=this.map.h) return -1;
 			var entities=this.GetEntities(x,y);
@@ -622,9 +623,9 @@ var LaunchDungeons=function()
 			{
 				r=M.dig();
 			}
-			//all done! decorate and render.
+			// 完了！デコレーションして描画する
 			M.finish();
-			//spawn treasure
+			// 宝を出現させる
 			/*
 			for (var i in M.rooms)
 			{
@@ -643,12 +644,12 @@ var LaunchDungeons=function()
 				}
 			}*/
 			
-			for (var i in M.doors)//place door entities on door positions
+			for (var i in M.doors)// ドアの位置にドアエンティティを配置する
 			{
 				//M.data[M.doors[i][0]][M.doors[i][1]][0]=TILE_FLOOR_EDGE;
 				this.AddEntity('destructible','door',M.doors[i][0],M.doors[i][1]);
 			}
-			//set tile graphics
+			// タイルのグラフィックを設定する
 			for (var i in M.rooms)
 			{
 				var altStr=choose(['alt ','','']);
@@ -671,7 +672,7 @@ var LaunchDungeons=function()
 			this.map=M;
 			this.map.str=this.map.getStr();
 			
-			//place a boss
+			//ボスの配置
 			var tile=this.map.exit;
 			var monsters=[];
 			for (var ii in Game.BossMonsters)
@@ -686,7 +687,7 @@ var LaunchDungeons=function()
 				this.map.removeFreeTile(tile[0],tile[1]);
 			}
 			
-			//place relics
+			// 遺物を配置する
 			/*
 			var tile=this.map.getBestSpotInRoom(this.map.getRoom(this.map.exit[0],this.map.exit[1]));
 			var entity=this.AddEntity('special','upgrade',tile.x,tile.y);
@@ -704,45 +705,45 @@ var LaunchDungeons=function()
 				}
 			}*/
 			
-			//sprinkle monsters and treasure
-			for (var i=0;i<Math.ceil(this.map.freeTiles.length*0.7);i++)//let's fill this up with A LOT of stuff
+			// モンスターと宝を散りばめる
+		for (var i=0;i<Math.ceil(this.map.freeTiles.length*0.7);i++)// ここを大量のオブジェクトで埋めよう
+		{
+			var tile=choose(this.map.freeTiles);
+			if (tile!=-1)
 			{
-				var tile=choose(this.map.freeTiles);
-				if (tile!=-1)
+				var room=this.map.getRoom(tile[0],tile[1]);
+				var depth=room.gen+1;
+				if (Math.random()<0.2)// 10回のうち2回はモンスター
 				{
-					var room=this.map.getRoom(tile[0],tile[1]);
-					var depth=room.gen+1;
-					if (Math.random()<0.2)//2 in 10 spawns are monsters
+					var monsters=[];
+					for (var ii in Game.Monsters)
 					{
-						var monsters=[];
-						for (var ii in Game.Monsters)
-						{
-							var me=Game.Monsters[ii];
-							if (me.level!=0 && me.level<=(depth+this.level) && Math.random()<(me.stats.rarity||1)) monsters.push(me.name);//spawn type depending on monster level and rarity
-						}
-						if (monsters.length>0)
-						{
-							this.AddEntity('monster',choose(monsters),tile[0],tile[1]);
-							this.map.removeFreeTile(tile[0],tile[1]);
-						}
+						var me=Game.Monsters[ii];
+						if (me.level!=0 && me.level<=(depth+this.level) && Math.random()<(me.stats.rarity||1)) monsters.push(me.name);// モンスターのレベルとレア度に応じて出現タイプを決定
 					}
-					else//the rest of the spawns are destructibles or loot
+					if (monsters.length>0)
 					{
-						if (Math.random()<0.6)
-						{
-							var value=Math.round(Math.pow(Math.random(),6)*(10+this.level));
-							if (value>0)
-							{
-								var entity=this.AddEntity('item','cookies',tile[0],tile[1]);//random cookies
-								entity.value=value;
-							}
-						}
-						else this.AddEntity('destructible','random',tile[0],tile[1]);//random crates etc
+						this.AddEntity('monster',choose(monsters),tile[0],tile[1]);
 						this.map.removeFreeTile(tile[0],tile[1]);
 					}
 				}
+				else// 残りの出現は破壊可能オブジェクトか戦利品
+				{
+					if (Math.random()<0.6)
+					{
+						var value=Math.round(Math.pow(Math.random(),6)*(10+this.level));
+						if (value>0)
+						{
+							var entity=this.AddEntity('item','cookies',tile[0],tile[1]);// ランダムなクッキー
+							entity.value=value;
+						}
+					}
+					else this.AddEntity('destructible','random',tile[0],tile[1]);// ランダムなクレートなど
+					this.map.removeFreeTile(tile[0],tile[1]);
+				}
 			}
 		}
+	}
 		
 		this.onTile=-1;
 		
@@ -844,8 +845,8 @@ var LaunchDungeons=function()
 		}
 	}
 	
-	Game.DungeonLocationChain=function(map,x,y)//return an array of the rooms between the root room and this tile's room, inclusive
-	{//we shouldn't need all this if we used A*...
+	Game.DungeonLocationChain=function(map,x,y)// ルート部屋とこのタイルの部屋の間の部屋を配列で返す（両端含む）
+	{// A* を使えばこんなにやる必要はないはず…
 		var room=map.getRoom(x,y);
 		var chain=[];
 		if (room!=-1)
@@ -859,28 +860,28 @@ var LaunchDungeons=function()
 		chain.reverse();
 		return chain;
 	}
-	Game.DungeonLinkLocationChains=function(start,end)//return the room in which the first location chain should go to to get closer to the second location chain
+	Game.DungeonLinkLocationChains=function(start,end)// 最初のロケーションチェーンが2つ目のロケーションチェーンに近づくために進むべき部屋を返す
 	{
 		/*
-		4 cases
-		-we're already in the same room
-		-the target is in a different branch
-		-the target is above in the same branch
-		-the target is below in the same branch
+		4つの場合
+		- すでに同じ部屋にいる
+		- ターゲットが別の枝にいる
+		- ターゲットが同じ枝の上にある
+		- ターゲットが同じ枝の下にある
 		*/
 		start.reverse();
 		end.reverse();
-		if (start[0].id==end[0].id) return start[start.length-1];//same room
+		if (start[0].id==end[0].id) return start[start.length-1];// 同じ部屋
 		for (var i in end)
 		{
-			if (start[0]==end[i].parent) return end[i];//inferior branch, go to the inferior room
+			if (start[0]==end[i].parent) return end[i];// 下位の枝の場合、下位の部屋へ進む
 		}
-		if (start.length>1) return start[1];//different or superior branch, go to the superior room
-		return start[0];//eeeh, let's just stay in the same room
+		if (start.length>1) return start[1];// 別の枝または上位の枝の場合、上位の部屋へ進む
+		return start[0];// うーん、とりあえず同じ部屋にとどまる
 	}
 	
 	/*=====================================================================================
-	CREATE DUNGEONS
+	ダンジョンを作る
 	=======================================================================================*/
 	Game.Objects['Factory'].special=function()
 	{
@@ -916,7 +917,7 @@ var LaunchDungeons=function()
 			}
 		}
 		
-		if (document.addEventListener)//clean this up later
+		if (document.addEventListener)// あとで整理する
 		{
 			l('rowSpecial'+this.dungeon.id).removeEventListener('keydown',arguments.callee,false);
 			l('rowSpecial'+this.dungeon.id).addEventListener('keydown',function(event)
@@ -927,7 +928,7 @@ var LaunchDungeons=function()
 				else if (event.keyCode==38) {dungeon.hero.Move(0,-1);control=1;}
 				else if (event.keyCode==39) {dungeon.hero.Move(1,0);control=1;}
 				else if (event.keyCode==40) {dungeon.hero.Move(0,1);control=1;}
-				else if (event.keyCode==32) {dungeon.hero.Move(0,0);control=1;}//space
+				else if (event.keyCode==32) {dungeon.hero.Move(0,0);control=1;}//スペース
 				else if (event.keyCode==65)//A (auto)
 				{
 					if (dungeon.auto)
@@ -959,7 +960,7 @@ var LaunchDungeons=function()
 	}
 	
 	/*=====================================================================================
-	HEROES
+	ヒーロー
 	=======================================================================================*/
 	Game.Heroes=[];
 	Game.HeroesById=[];
@@ -1051,7 +1052,7 @@ var LaunchDungeons=function()
 	}
 	
 	/*=====================================================================================
-	CREATE HEROES
+	ヒーローを作る
 	=======================================================================================*/
 	var hero=new Game.Hero('Chip','girlscoutChip','portraitChip',[1,0]);
 	hero.dialogue={

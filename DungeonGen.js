@@ -42,18 +42,18 @@ if (1==1 || undefined==choose) {function choose(arr) {if (arr.length==0) return 
 
 var DungeonGen=function()
 {
-	var TILE_EMPTY=0;//solid
-	var TILE_LIMIT=-100;//can't build anything here; edges of map
+	var TILE_EMPTY=0;// 固体
+	var TILE_LIMIT=-100;// ここには何も建てられない；マップの端
 	var TILE_FLOOR_EDGE=100;
 	var TILE_FLOOR_CENTER=110;
 	var TILE_DOOR=200;
-	var TILE_PILLAR=300;//not just pillars, could be any type of repetitive decoration
+	var TILE_PILLAR=300;// 単なる柱ではなく、繰り返しの装飾的なものも含まれる
 	var TILE_WATER=400;
 	var TILE_WALL=500;
 	var TILE_WALL_CORNER=510;
 	var TILE_ENTRANCE=250;
 	var TILE_EXIT=260;
-	
+
 	var colors=[];
 	colors[TILE_EMPTY]='000';
 	colors[TILE_LIMIT]='900';
@@ -66,8 +66,8 @@ var DungeonGen=function()
 	colors[TILE_WALL_CORNER]='630';
 	colors[TILE_ENTRANCE]='f9f';
 	colors[TILE_EXIT]='f9f';
-	
-	var rand=function(a,b){return Math.floor(Math.random()*(b-a+1)+a);}//return random value between a and b
+
+	var rand=function(a,b){return Math.floor(Math.random()*(b-a+1)+a);}// a と b の間でランダムな値を返す
 	
 	var Patterns=[];
 	this.Pattern=function(name,func)
@@ -126,10 +126,10 @@ var DungeonGen=function()
 	
 	this.Map=function(w,h,seed,params)
 	{
-		//create a new map
-		//leave the seed out for a random seed
-		//params is an object that contains custom parameters as defined in defaultGenerator
-		//example : MyMap=new DungeonGen.Map(30,30,MySeed,{waterRatio:0.8}); (80 percent of the rooms will contain water)
+		// 新しいマップを作成
+		// ランダムなシードを使うためにシードを省略
+		// params は defaultGenerator で定義されたカスタムパラメータを含むオブジェクト
+		// 例 : MyMap=new DungeonGen.Map(30,30,MySeed,{waterRatio:0.8}); （部屋の80%が水で満たされる）
 		if (undefined!=seed) this.seed=seed; else {Math.seedrandom();this.seed=Math.random();}
 		Math.seedrandom(this.seed);
 		this.seedState=Math.random;
@@ -138,24 +138,24 @@ var DungeonGen=function()
 		
 		this.roomsAreHidden=0;
 		
-		this.rooms=[];
-		this.freeWalls=[];//all walls that would be a good spot for a door
-		this.freeTiles=[];//all passable floor tiles
-		this.doors=[];
-		this.tiles=this.w*this.h;
-		this.tilesDug=0;
-		this.digs=0;//amount of digging steps
-		this.stuck=0;//how many times we ran into a problem; stop digging if we get too many of these
-		
-		this.data=[];//fill the map with 0
-		for (var x=0;x<this.w;x++)
-		{
-			this.data[x]=[];
-			for (var y=0;y<this.h;y++)
-			{
-				this.data[x][y]=[TILE_EMPTY,-1,0];//data is stored as [tile system type,room id,tile displayed type] (-1 is no room)
-				if (x==0 || y==0 || x==this.w-1 || y==this.h-1) this.data[x][y]=[TILE_LIMIT,-1,0];
-			}
+		this.rooms=[];  
+		this.freeWalls=[]; // ドアを設置するのに適したすべての壁  
+		this.freeTiles=[]; // 通行可能な床タイルすべて  
+		this.doors=[];  
+		this.tiles=this.w*this.h;  
+		this.tilesDug=0;  
+		this.digs=0; // 掘削ステップの回数  
+		this.stuck=0; // 問題に遭遇した回数；問題が多すぎると掘削を停止  
+
+		this.data=[]; // マップを0で埋める  
+		for (var x=0;x<this.w;x++)  
+		{  
+			this.data[x]=[];  
+			for (var y=0;y<this.h;y++)  
+			{  
+				this.data[x][y]=[TILE_EMPTY,-1,0]; // データは [タイルシステムタイプ,部屋ID,表示されるタイルタイプ] として保存される (-1 は部屋なし)  
+				if (x==0 || y==0 || x==this.w-1 || y==this.h-1) this.data[x][y]=[TILE_LIMIT,-1,0];  
+			}  
 		}
 		
 		defaultGenerator(this);
@@ -193,10 +193,11 @@ var DungeonGen=function()
 	
 	this.Map.prototype.fill=function(what)
 	{
-		//fill with something (either a set value, or a function that takes the map, a position X and a position Y as arguments)
-		//NOTE : this also resets the rooms!
-		//example : MyMap.fill(function(m,x,y){return Math.floor((Math.random());});
-		//...will fill the map with 0s and 1s
+		// 何かで埋める（セット値か、マップ、X位置、Y位置を引数に取る関数のいずれか）
+		// 注意：これを実行すると部屋もリセットされます！
+		// 例 : MyMap.fill(function(m,x,y){return Math.floor((Math.random()));});
+		// ...これでマップは0と1で埋められます
+
 		var func=0;
 		if (typeof(what)=='function') func=1;
 		for (var x=0;x<this.w;x++){for (var y=0;y<this.h;y++){
@@ -207,7 +208,7 @@ var DungeonGen=function()
 	
 	this.Map.prototype.fillZone=function(X,Y,W,H,what)
 	{
-		//just plain fill a rectangle
+		// 単純に矩形を埋める
 		for (var x=X;x<X+W;x++){for (var y=Y;y<Y+H;y++){
 			this.data[x][y][0]=what;
 		}}
@@ -251,8 +252,8 @@ var DungeonGen=function()
 		if (oldTile!=-1 && (
 			//(tile!=TILE_FLOOR_EDGE && tile!=TILE_FLOOR_CENTER) ||// && (oldTileType!=TILE_FLOOR_EDGE && oldTileType!=TILE_FLOOR_CENTER)) ||
 			//(tile!=TILE_FLOOR_EDGE && tile!=TILE_FLOOR_CENTER && (oldTileType!=TILE_FLOOR_EDGE && oldTileType!=TILE_FLOOR_CENTER)) ||
-			(tile==TILE_WALL || tile==TILE_WALL_CORNER) ||//don't place a wall over an existing room
-			(tile==TILE_FLOOR_EDGE && oldTileType==TILE_FLOOR_CENTER)//don't place an edge floor over a center floor
+			(tile==TILE_WALL || tile==TILE_WALL_CORNER) || // 既存の部屋の上に壁を置かない
+			(tile==TILE_FLOOR_EDGE && oldTileType==TILE_FLOOR_CENTER) // センターフロアの上にエッジフロアを置かない
 			)) {return false;}
 		else
 		{
@@ -267,14 +268,14 @@ var DungeonGen=function()
 	this.Map.prototype.expandRoom=function(room,rx,ry,rw,rh)
 	{
 		var x=0;var y=0;
-		//floor
+		//床
 		for (var x=rx;x<rx+rw;x++){for (var y=ry;y<ry+rh;y++){
 			this.setRoomTile(room,x,y,TILE_FLOOR_EDGE);
 		}}
 		for (var x=rx+1;x<rx+rw-1;x++){for (var y=ry+1;y<ry+rh-1;y++){
 			this.setRoomTile(room,x,y,TILE_FLOOR_CENTER);
 		}}
-		//walls
+		//壁
 		y=ry-1;
 		for (var x=rx;x<rx+rw;x++){
 			this.setRoomTile(room,x,y,TILE_WALL);
@@ -291,7 +292,7 @@ var DungeonGen=function()
 		for (var y=ry;y<ry+rh;y++){
 			this.setRoomTile(room,x,y,TILE_WALL);
 		}
-		//corners
+		//角
 		x=rx-1;y=ry-1;
 		this.setRoomTile(room,x,y,TILE_WALL_CORNER);
 		x=rx+rw;y=ry-1;
@@ -301,7 +302,7 @@ var DungeonGen=function()
 		x=rx+rw;y=ry+rh;
 		this.setRoomTile(room,x,y,TILE_WALL_CORNER);
 		
-		//decoration
+		//装飾
 		var water=Math.random()<this.waterRatio?1:0;
 		var pattern=Math.random()<this.pillarRatio?getRandomPattern():0;
 		for (var x=rx;x<rx+rw;x++){for (var y=ry;y<ry+rh;y++){
@@ -320,7 +321,7 @@ var DungeonGen=function()
 	
 	this.Map.prototype.newRoom=function(x,y,w,h,parent)
 	{
-		//create a new abstract room, ready to be carved
+		// 新しい抽象的な部屋を作成、彫刻する準備ができている
 		var room={};
 		room.id=this.rooms.length;
 		room.w=w;//||rand(2,this.roomSize);
@@ -334,8 +335,9 @@ var DungeonGen=function()
 		room.gen=0;
 		room.door=0;
 		room.corridor=Math.random()<this.corridorRatio?1:0;
-		room.hidden=this.roomsAreHidden;//if 1, don't draw
-		//if (room.parent!=-1) room.corridor=!room.parent.corridor;//alternate rooms and corridors
+		room.hidden=this.roomsAreHidden;// 1なら描画しない
+
+		//if (room.parent!=-1) room.corridor=!room.parent.corridor;// 部屋と廊下を交互に配置
 		
 		return room;
 	}
@@ -391,7 +393,7 @@ var DungeonGen=function()
 	
 	this.Map.prototype.carve=function(room)
 	{
-		//carve a room into the map
+		// マップに部屋を彫り込む
 		for (var i in room.tiles)
 		{
 			var thisTile=room.tiles[i];
@@ -417,14 +419,14 @@ var DungeonGen=function()
 	this.Map.prototype.newRandomRoom=function(params)
 	{
 		var success=1;
-		params=params||{};//params is an object such as {corridor:1}
-		var door=choose(this.freeWalls);//select a free wall to use as a door
+		params=params||{};//paramsは{corridor:1}のようなオブジェクトです
+		var door=choose(this.freeWalls);//ドアとして使用する自由な壁を選択します
 		if (!door) {success=0;}
 		else
 		{
 			//this.data[door[0]][door[1]][0]=TILE_LIMIT;//not door
 			var parentRoom=this.getRoom(door[0],door[1]);
-			var sides=[];//select a free side of that door
+			var sides=[];//そのドアの自由な側面を選択します
 			if (this.getType(door[0]-1,door[1])==TILE_EMPTY) sides.push([-1,0]);
 			if (this.getType(door[0]+1,door[1])==TILE_EMPTY) sides.push([1,0]);
 			if (this.getType(door[0],door[1]-1)==TILE_EMPTY) sides.push([0,-1]);
@@ -433,28 +435,28 @@ var DungeonGen=function()
 			if (!side) {success=0;this.freeWalls.splice(this.isWall(door[0],door[1]),1);}
 			else
 			{
-				var room=this.newRoom(door[0]+side[0],door[1]+side[1],0,0,parentRoom);//try a new room from this spot
+				var room=this.newRoom(door[0]+side[0],door[1]+side[1],0,0,parentRoom);//この位置から新しい部屋を試します
 				for (var i in params)
 				{
 					room[i]=params[i];
 				}
 				this.planRoom(room);
-				if (room.tiles.length>0 && room.freeTiles>0)//we got a decent room
+				if (room.tiles.length>0 && room.freeTiles>0)//いい感じの部屋ができました
 				{
 					this.carve(room);
-					this.data[door[0]][door[1]][0]=TILE_DOOR;//place door
+					this.data[door[0]][door[1]][0]=TILE_DOOR;//ドアを設置
 					room.door=[door[0],door[1]];
-					this.data[door[0]][door[1]][1]=room.id;//set ID
-					this.freeWalls.splice(this.isWall(door[0],door[1]),1);//the door isn't a wall anymore
+					this.data[door[0]][door[1]][1]=room.id;//IDを設定
+					this.freeWalls.splice(this.isWall(door[0],door[1]),1);//ドアはもう壁ではありません
 					this.doors.push([door[0],door[1],room]);
-					//remove free tiles on either side of the door
+					//ドアの両側の自由なタイルを削除
 					if (this.isFloor(door[0]+side[0],door[1]+side[1])!=-1) this.removeFreeTile(door[0]+side[0],door[1]+side[1]);
 					if (this.isFloor(door[0]-side[0],door[1]-side[1])!=-1) this.removeFreeTile(door[0]-side[0],door[1]-side[1]);
 					room.parent=parentRoom;
 					parentRoom.children.push(room);
 					room.gen=parentRoom.gen+1;
 				}
-				else//not a good spot; remove this tile from the list of walls
+				else//良い位置ではありません；このタイルを壁リストから削除
 				{
 					this.freeWalls.splice(this.isWall(door[0],door[1]),1);
 					success=0;
@@ -518,13 +520,13 @@ var DungeonGen=function()
 	
 	this.Map.prototype.dig=function()
 	{
-		//one step in which we try to carve new stuff
-		//returns 0 when we couldn't dig this step, 1 when we could, and 2 when the digging is complete
+		//新しいものを掘ろうとする一歩
+		//このステップで掘れなかった場合は0を、掘れた場合は1を、掘り終わった場合は2を返します
 		Math.random=this.seedState;
-		
+
 		var badDig=0;
-		
-		if (this.digs==0)//first dig : build a starting room in the middle of the map
+
+		if (this.digs==0)//最初の掘り作業：マップの中央にスタートルームを作成
 		{
 			var w=rand(3,7);
 			var h=rand(3,7);
@@ -538,14 +540,14 @@ var DungeonGen=function()
 			if (this.newRandomRoom()==0) badDig++;
 		}
 		if (badDig>0) this.stuck++;
-		
+
 		this.digs++;
-		
+
 		var finished=0;
 		if (this.tilesDug>=this.tiles*this.fillRatio) finished=1;
 		if (this.stuck>100) finished=1;
-		
-		if (finished==1)//last touch : try to add a whole room at the end
+
+		if (finished==1)//最後の仕上げ：最後に一部屋を追加してみる
 		{
 			for (var i=0;i<10;i++)
 			{
@@ -560,9 +562,9 @@ var DungeonGen=function()
 	
 	this.Map.prototype.finish=function()
 	{
-		//touch up the map : add pillars in corners etc
+		//マップを仕上げる：隅に柱を追加するなど
 		/*
-		//set paths
+    	//道を設定
 		for (var i in this.rooms)
 		{
 			var me=this.rooms[i];
@@ -651,7 +653,7 @@ var DungeonGen=function()
 					}
 				}
 				
-				//calculate score (for placing items and exits)
+				//スコアを計算する（アイテムや出口の配置のため）
 				if (top==1 || bottom==1 || left==1 || right==1)
 				{
 					this.rooms[i].tiles[ii].score+=2;
@@ -671,7 +673,7 @@ var DungeonGen=function()
 		
 		
 		
-		//carve entrance and exit
+		//入口と出口を掘る
 		var entrance=this.getBestSpotInRoom(this.getEarliestRoom());
 		this.data[entrance.x][entrance.y][0]=TILE_ENTRANCE;
 		this.entrance=[entrance.x,entrance.y];
@@ -703,8 +705,8 @@ var DungeonGen=function()
 	
 	var joinTile=function(map,x,y,joinWith)
 	{
-		//for the tile at x,y, return 2 if it joins with its horizontal neighbors, 3 if it joins with its vertical neighbors, 1 if it joins with either both or neither.
-		//joinWith contains the tile types that count as joinable, in addition to this tile. (don't add the tested tile to joinWith!)
+		//x, yのタイルについて、横方向の隣接タイルと繋がっていれば2、縦方向の隣接タイルと繋がっていれば3、両方またはどちらとも繋がっていなければ1を返す。
+		//joinWithには、このタイルと繋がるとみなされるタイルタイプが含まれます（テスト対象のタイルはjoinWithに追加しないこと！）
 		var p=1;
 		var me=map.data[x][y][0];
 		var x1=map.data[x-1][y][0];
@@ -731,13 +733,13 @@ var DungeonGen=function()
 	}
 	this.Map.prototype.getPic=function(x,y)
 	{
-		//return a position [x,y] in the tiles (as 0, 1, 2...) for the tile on the map at position x,y
+		//マップ上の位置x, yにあるタイルに対して、そのタイルの位置[x, y]（0, 1, 2...の形式）を返す
 		if (Tiles[this.data[x][y][2]])
 		{
 			if (Tiles[this.data[x][y][2]].joinType=='join')
 			{
 				var thisPic=Tiles[this.data[x][y][2]].pic;
-				thisPic=[thisPic[0],thisPic[1]];//why is this even necessary?
+				thisPic=[thisPic[0],thisPic[1]];//これは一体なぜ必要なのか？
 				var joinWith=[];
 				if (this.data[x][y][0]==TILE_WALL) joinWith.push(TILE_WALL_CORNER);
 				else if (this.data[x][y][0]==TILE_DOOR) joinWith.push(TILE_WALL,TILE_WALL_CORNER);
@@ -786,7 +788,7 @@ var DungeonGen=function()
 	}
 	this.Map.prototype.assignTiles=function(room,tiles)
 	{
-		//set the displayed tiles for this room
+		//この部屋の表示されるタイルを設定する
 		for (var i in room.tiles)
 		{
 			var type=Tiles[0];
@@ -809,7 +811,7 @@ var DungeonGen=function()
 	
 	this.Map.prototype.draw=function(size)
 	{
-		//return a string containing a rough visual representation of the map
+		//マップの大まかな視覚的表現を含む文字列を返す
 		var str='';
 		var size=size||10;
 		for (var y=0;y<this.h;y++){for (var x=0;x<this.w;x++){
@@ -830,7 +832,7 @@ var DungeonGen=function()
 	
 	this.Map.prototype.drawDetailed=function()
 	{
-		//return a string containing a rough visual representation of the map (with graphics)
+		//マップの大まかな視覚的表現（グラフィック付き）を含む文字列を返す
 		var str='';
 		var size=16;
 		for (var y=0;y<this.h;y++){for (var x=0;x<this.w;x++){
@@ -855,28 +857,28 @@ var DungeonGen=function()
 	
 	this.Map.prototype.getStr=function()
 	{
-		//return a string containing the map with tile graphics, ready to be pasted in a wrapper
+		//タイルのグラフィックを含むマップを返す（ラッパーに貼り付ける準備ができている状態）
 		var str='';
 		var size=16;
 		for (var y=0;y<this.h;y++){for (var x=0;x<this.w;x++){
-				var room=this.getRoom(x,y);
-				//var opacity=Math.max(0.1,room.tiles[this.getRoomTile(room,x,y)].score);
-				var opacity=1;
-				var title='void';
-				var pic=this.getPic(x,y);
-				if (room!=-1)
-				{
-					/*
-					opacity=Math.max(0.1,1-room.gen/5);
-					if (room.hidden) opacity=0;
-					if (this.data[x][y][0]==TILE_ENTRANCE || this.data[x][y][0]==TILE_EXIT) opacity=1;
-					*/
-					if (room.hidden) pic=[0,0];
-					title=(room.corridor?'corridor':'room')+' '+room.id+' | depth : '+room.gen+' | children : '+room.children.length;
-				}
-				str+='<div style="opacity:'+opacity+';width:'+size+'px;height:'+size+'px;position:absolute;left:'+(x*size)+'px;top:'+(y*size)+'px;display:block;padding:0px;margin:0px;background:#'+colors[this.data[x][y][0]]+' url(img/dungeonTiles.png) '+(-pic[0]*16)+'px '+(-pic[1]*16)+'px;color:#999;" title="'+title+'"></div>';
+			var room=this.getRoom(x,y);
+			//var opacity=Math.max(0.1,room.tiles[this.getRoomTile(room,x,y)].score);
+			var opacity=1;
+			var title='void';
+			var pic=this.getPic(x,y);
+			if (room!=-1)
+			{
+				/*
+				opacity=Math.max(0.1,1-room.gen/5);
+				if (room.hidden) opacity=0;
+				if (this.data[x][y][0]==TILE_ENTRANCE || this.data[x][y][0]==TILE_EXIT) opacity=1;
+				*/
+				if (room.hidden) pic=[0,0];
+				title=(room.corridor?'corridor':'room')+' '+room.id+' | depth : '+room.gen+' | children : '+room.children.length;
 			}
-			str+='<br>';
+			str+='<div style="opacity:'+opacity+';width:'+size+'px;height:'+size+'px;position:absolute;left:'+(x*size)+'px;top:'+(y*size)+'px;display:block;padding:0px;margin:0px;background:#'+colors[this.data[x][y][0]]+' url(img/dungeonTiles.png) '+(-pic[0]*16)+'px '+(-pic[1]*16)+'px;color:#999;" title="'+title+'"></div>';
+		}
+		str+='<br>';
 		}
 		return str;
 	}

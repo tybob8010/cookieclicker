@@ -7,10 +7,10 @@
  
 var Base64 = {
  
-	// private property
+	// プライベートプロパティ
 	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
  
-	// public method for encoding
+	// エンコード用の公開メソッド
 	encode : function (input) {
 		var output = "";
 		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
@@ -44,7 +44,7 @@ var Base64 = {
 		return output;
 	},
  
-	// public method for decoding
+	// デコード用の公開メソッド
 	decode : function (input) {
 		var output = "";
 		var chr1, chr2, chr3;
@@ -81,7 +81,7 @@ var Base64 = {
  
 	},
  
-	// private method for UTF-8 encoding
+	// UTF-8エンコード用のプライベートメソッド
 	_utf8_encode : function (string) {
 		string = string.replace(/\r\n/g,"\n");
 		var utftext = "";
@@ -108,7 +108,7 @@ var Base64 = {
 		return utftext;
 	},
  
-	// private method for UTF-8 decoding
+	// UTF-8デコード用のプライベートメソッド
 	_utf8_decode : function (utftext) {
 		var string = "";
 		var i = 0;
