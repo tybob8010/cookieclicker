@@ -6,3 +6,5 @@ javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/
 javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/MODs/mod1.js"); })();
 
 javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/MODs/mod2.js"); })();
+
+javascript:(function(){ Game.LoadMod("https://tybob8010.github.io/cookieclicker/MODs/mod_Dungeon.js"); })();
